@@ -1,5 +1,4 @@
-# qualite-decp
-## Evaluation de la qualité des Données Essentielles de la Commande Publique (DECP). 
+## **qualite-decp** : Evaluation de la qualité des Données Essentielles de la Commande Publique (DECP). 
 
 Prérequis :
 * pipenv
