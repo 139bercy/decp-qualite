@@ -1,3 +1,6 @@
+""" Package qualite_decp pour le projet qualite-decp.
+"""
+
 import yaml
 import munch
 

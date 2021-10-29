@@ -1,3 +1,7 @@
+""" Ce module contient les fonctions nécessaires à l'utilisation en ligne de commande du projet.
+"""
+
+
 import argparse
 
 import audit
