@@ -1,3 +1,9 @@
+download:
+  consolidated_data_url: https://www.data.gouv.fr/fr/datasets/r/16962018-5c31-4296-9454-5998585496d2
+  consolidated_data_schema_url: https://schema.data.gouv.fr/schemas/139bercy/format-commande-publique/latest/marches.json
+  consolidated_data_path: data/consolidated_data.json
+  consolidated_data_schema_path: data/consolidated_data_schema.json
+
 web:
   page_title : Evaluation de la qualité des Données Essentielles de la Commande Publique (DECP)
   sample_text: Hello world!

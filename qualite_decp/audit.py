@@ -1,6 +1,8 @@
 """ Ce module contient les fonctions nécessaires à l'audit de qualité des données consolidées.
 """
 
+import logging
+
 
 def run(rows: int = None):
     """Audite la donnée consolidée et stocke les résultats.
