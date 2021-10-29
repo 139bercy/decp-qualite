@@ -9,6 +9,7 @@ streamlit = "*"
 jsonschema = "*"
 pyyaml = "*"
 munch = "*"
+qualite-decp = {editable = true, path = "./qualite_decp"}
 
 [dev-packages]
 pylint = "*"

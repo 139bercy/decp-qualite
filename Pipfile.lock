@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1b7facbf4fc9a68a07487d04e2df744baf0b04307e6a5c22f97327260dc3574f"
+            "sha256": "d6880b1f5c0c175b74f463dde1d9398466873ed418f11625dac6d20d9b527c76"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -772,6 +772,10 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==22.3.0"
+        },
+        "qualite-decp": {
+            "editable": true,
+            "path": "./qualite_decp"
         },
         "requests": {
             "hashes": [

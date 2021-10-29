@@ -3,9 +3,9 @@
 
 import argparse
 
-from . import audit
-from . import download
-from . import web
+from qualite_decp import audit
+from qualite_decp import download
+from qualite_decp import web
 
 
 def command_download(args=None):
@@ -15,7 +15,7 @@ def command_download(args=None):
 
 def command_audit(args=None):
     """Audite la donnée consolidée et stocke les résultats."""
-    audit.run(rows=args.row)
+    audit.run(rows=args.rows)
 
 
 def command_web(args=None):

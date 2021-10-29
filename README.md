@@ -8,3 +8,8 @@ Installer les dépendances  :
 ```shell
 pipenv install
 ```
+
+Utiliser l'interface en ligne de commande  :
+```shell
+pipenv run python .
+```

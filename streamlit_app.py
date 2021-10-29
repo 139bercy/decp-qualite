@@ -1,3 +1,3 @@
-import qualite_decp.web.app
+from qualite_decp import web
 
-qualite_decp.web.app.run()
+web.app.run()
