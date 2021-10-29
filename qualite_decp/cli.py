@@ -1,12 +1,11 @@
 """ Ce module contient les fonctions nécessaires à l'utilisation en ligne de commande du projet.
 """
 
-
 import argparse
 
-import audit
-import download
-import web
+from . import audit
+from . import download
+from . import web
 
 
 def command_download(args=None):
