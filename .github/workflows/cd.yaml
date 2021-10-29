@@ -1,4 +1,4 @@
-name: run
+name: cd
 on:
   #schedule:
   #  - cron:  '0 8,14 * * *'
@@ -21,7 +21,7 @@ jobs:
           pipenv install --deploy
       - name: Run the CLI command to download consolidated data
         run: |
-          pipenv run python . download --consolidated
+          pipenv run python . download
       - name: Run the quality audit on first 10 rows
         run: |
           pipenv run python . audit --rows 10
