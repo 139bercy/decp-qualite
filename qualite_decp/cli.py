@@ -1,5 +1,6 @@
 import argparse
 
+
 def get_parser():
     """
     Creates a new argument parser.
@@ -7,9 +8,10 @@ def get_parser():
     parser = argparse.ArgumentParser()
     return parser
 
+
 def run(args=None):
-    """ Main entry point.
-    
+    """Main entry point.
+
     Args:
         args : list of arguments as if they were input in the command line.
     """
