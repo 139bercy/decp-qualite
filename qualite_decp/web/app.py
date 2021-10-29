@@ -4,7 +4,7 @@ from qualite_decp import conf
 
 
 def run():
-    """Runs quality reporting web application."""
+    """Lance l'application web de présentation des résultats"""
 
     st.set_page_config(
         page_title=conf.web.page_title,
