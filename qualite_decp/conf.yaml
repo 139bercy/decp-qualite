@@ -5,5 +5,7 @@ download:
   consolidated_data_schema_path: data/consolidated_data_schema.json
 
 web:
-  page_title : Evaluation de la qualité des Données Essentielles de la Commande Publique (DECP)
-  sample_text: Hello world!
+  page_title : Qualité des Données Essentielles de la Commande Publique (DECP)
+  sidebar_top_text_markdown: Cette application propose une analyse de la qualité des DECP.
+  sidebar_bottom_text_markdown: Consultez la documentation pour plus d'information.
+  title: Qualité des Données Essentielles de la Commande Publique (DECP)

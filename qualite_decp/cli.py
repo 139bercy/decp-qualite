@@ -2,10 +2,12 @@
 """
 
 import argparse
+import sys
+
+import streamlit.cli
 
 from qualite_decp import audit
 from qualite_decp import download
-from qualite_decp import web
 
 
 def command_download(args=None):
@@ -20,7 +22,8 @@ def command_audit(args=None):
 
 def command_web(args=None):
     """Lance l'application web de présentation des résultats"""
-    web.app.run()
+    sys.argv = ["0", "run", "./streamlit_app.py"]
+    streamlit.cli.main()
 
 
 def get_parser():
