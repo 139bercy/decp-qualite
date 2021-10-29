@@ -1,0 +1,33 @@
+name: run
+on:
+  #schedule:
+  #  - cron:  '0 8,14 * * *'
+  push:
+    branches: 
+      - main
+jobs:
+  download-data-and-audit-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out to repo
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies from Pipfile
+        run: |
+          python -m pip install --upgrade pipenv
+          pipenv install --deploy
+      - name: Run the CLI command to download consolidated data
+        run: |
+          pipenv run python . download --consolidated
+      - name: Run the quality audit on first 10 rows
+        run: |
+          pipenv run python cli.py audit --rows 10
+      # - name: Upload audit results as artifact
+      #   uses: actions/upload-artifact@v2
+      #   with: 
+      #     name: data_quality_audit_results.json
+      #     path: ./data/data_quality_audit_results.json
+      #     retention-days: 365
