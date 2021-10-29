@@ -29,7 +29,7 @@ def download_data_from_url_to_file(url: str, path: str, stream: bool = True):
         if stream:
             for counter, chunk in enumerate(response.iter_content(chunk_size=4096)):
                 file_writer.write(chunk)
-                print(".", end="", flush=True)
+                # print(".", end="", flush=True)
         else:
             file_writer.write(response.content)
 

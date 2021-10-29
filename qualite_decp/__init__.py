@@ -1,13 +1,25 @@
 """ Package qualite_decp pour le projet qualite-decp.
 """
 import logging
+import os
 
 import yaml
 import munch
 
 # Définit un logger pour le projet
+log_level = os.environ.get("LOG_LEVEL", "DEBUG")
+if log_level == "DEBUG":
+    level = logging.DEBUG
+elif log_level == "INFO":
+    level = logging.INFO
+elif log_level == "WARNING":
+    level = logging.WARNING
+elif log_level == "ERROR":
+    level = logging.ERROR
+elif log_level == "CRITICAL":
+    level = logging.CRITICAL
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=level,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.StreamHandler()],
 )
