@@ -15,7 +15,11 @@ class General:
 
 class Coherence:
     def __init__(
-        self, valeur, rang, incoherences_temporelles, incoherences_montant_duree
+        self,
+        valeur: float,
+        rang: int,
+        incoherences_temporelles,
+        incoherences_montant_duree,
     ):
         self.valeur = valeur
         self.rang = rang
@@ -41,7 +45,7 @@ class Coherence:
 
 
 class Exactitude:
-    def __init__(self, valeur, rang, valeurs_aberrantes, valeurs_extremes):
+    def __init__(self, valeur: float, rang: int, valeurs_aberrantes, valeurs_extremes):
         self.valeur = valeur
         self.rang = rang
         self.valeurs_aberrantes = valeurs_aberrantes
@@ -68,10 +72,10 @@ class Exactitude:
 class Validite:
     def __init__(
         self,
-        valeur,
-        rang,
-        jours_moyens_depuis_derniere_publication,
-        depassements_delai_entre_notification_et_publication,
+        valeur: float,
+        rang: int,
+        jours_moyens_depuis_derniere_publication: float,
+        depassements_delai_entre_notification_et_publication: float,
     ):
         self.valeur = valeur
         self.rang = rang
@@ -110,7 +114,9 @@ class Validite:
 
 
 class Completude:
-    def __init__(self, valeur, rang, donnees_manquantes, valeurs_non_renseignees):
+    def __init__(
+        self, valeur: float, rang: int, donnees_manquantes, valeurs_non_renseignees
+    ):
         self.valeur = valeur
         self.rang = rang
         self.donnees_manquantes = donnees_manquantes
@@ -137,8 +143,8 @@ class Completude:
 class Conformite:
     def __init__(
         self,
-        valeur,
-        rang,
+        valeur: float,
+        rang: int,
         caracteres_mal_encodes,
         formats_non_valides,
         valeurs_non_valides,
@@ -176,7 +182,9 @@ class Conformite:
 
 
 class Singularite:
-    def __init__(self, valeur, rang, identifiants_non_uniques, lignes_dupliquees):
+    def __init__(
+        self, valeur: float, rang: int, identifiants_non_uniques, lignes_dupliquees
+    ):
         self.valeur = valeur
         self.rang = rang
         self.identifiants_non_uniques = identifiants_non_uniques
