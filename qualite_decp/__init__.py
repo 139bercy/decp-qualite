@@ -2,6 +2,7 @@
 """
 import logging
 import os
+import sys
 
 import yaml
 import munch
@@ -20,9 +21,10 @@ elif log_level == "CRITICAL":
     level = logging.CRITICAL
 print("Log level:", log_level, level)
 logging.basicConfig(
+    stream=sys.stdout,
     level=level,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.StreamHandler()],
+    datefmt="%Y/%m/%d %I:%M:%S %p",
 )
 
 # Charge les entrées du fichier de configuration et les
