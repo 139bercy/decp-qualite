@@ -6,12 +6,15 @@ from qualite_decp.audit import audit_results_one_source
 
 class AuditResults:
     def __init__(
-        self, results: List[audit_results_one_source.AuditResultsOneSource] = None
+        self, results: List[audit_results_one_source.AuditResultsOneSource] = list()
     ):
         self.results = results
 
     def extract_results_for_source(self, source: str):
         return [r for r in self.results if r.source == source][0]
+
+    def add_results(self, results: audit_results_one_source.AuditResultsOneSource):
+        self.results.append(results)
 
     def to_list(self):
         return [r.to_dict() for r in self.results]

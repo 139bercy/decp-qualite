@@ -5,13 +5,13 @@ class AuditResultsOneSource:
     def __init__(
         self,
         source: str,
-        general: measures.General,
-        validite: measures.Validite,
-        completude: measures.Completude,
-        conformite: measures.Conformite,
-        coherence: measures.Coherence,
-        singularite: measures.Singularite,
-        exactitude: measures.Exactitude,
+        general: measures.General = measures.General(),
+        validite: measures.Validite = measures.Validite(),
+        completude: measures.Completude = measures.Completude(),
+        conformite: measures.Conformite = measures.Conformite(),
+        coherence: measures.Coherence = measures.Coherence(),
+        singularite: measures.Singularite = measures.Singularite(),
+        exactitude: measures.Exactitude = measures.Exactitude(),
     ):
         self.source = source
         self.general = general

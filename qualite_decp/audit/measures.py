@@ -1,5 +1,5 @@
 class General:
-    def __init__(self, valeur, rang):
+    def __init__(self, valeur: float = None, rang: int = None):
         self.valeur = valeur
         self.rang = rang
 
@@ -16,10 +16,10 @@ class General:
 class Coherence:
     def __init__(
         self,
-        valeur: float,
-        rang: int,
-        incoherences_temporelles,
-        incoherences_montant_duree,
+        valeur: float = None,
+        rang: int = None,
+        incoherences_temporelles=None,
+        incoherences_montant_duree=None,
     ):
         self.valeur = valeur
         self.rang = rang
@@ -45,7 +45,13 @@ class Coherence:
 
 
 class Exactitude:
-    def __init__(self, valeur: float, rang: int, valeurs_aberrantes, valeurs_extremes):
+    def __init__(
+        self,
+        valeur: float = None,
+        rang: int = None,
+        valeurs_aberrantes=None,
+        valeurs_extremes=None,
+    ):
         self.valeur = valeur
         self.rang = rang
         self.valeurs_aberrantes = valeurs_aberrantes
@@ -72,10 +78,10 @@ class Exactitude:
 class Validite:
     def __init__(
         self,
-        valeur: float,
-        rang: int,
-        jours_moyens_depuis_derniere_publication: float,
-        depassements_delai_entre_notification_et_publication: float,
+        valeur: float = None,
+        rang: int = None,
+        jours_moyens_depuis_derniere_publication: float = None,
+        depassements_delai_entre_notification_et_publication: float = None,
     ):
         self.valeur = valeur
         self.rang = rang
@@ -115,7 +121,11 @@ class Validite:
 
 class Completude:
     def __init__(
-        self, valeur: float, rang: int, donnees_manquantes, valeurs_non_renseignees
+        self,
+        valeur: float = None,
+        rang: int = None,
+        donnees_manquantes=None,
+        valeurs_non_renseignees=None,
     ):
         self.valeur = valeur
         self.rang = rang
@@ -143,11 +153,11 @@ class Completude:
 class Conformite:
     def __init__(
         self,
-        valeur: float,
-        rang: int,
-        caracteres_mal_encodes,
-        formats_non_valides,
-        valeurs_non_valides,
+        valeur: float = None,
+        rang: int = None,
+        caracteres_mal_encodes=None,
+        formats_non_valides=None,
+        valeurs_non_valides=None,
     ):
         self.valeur = valeur
         self.rang = rang
@@ -183,7 +193,11 @@ class Conformite:
 
 class Singularite:
     def __init__(
-        self, valeur: float, rang: int, identifiants_non_uniques, lignes_dupliquees
+        self,
+        valeur: float = None,
+        rang: int = None,
+        identifiants_non_uniques=None,
+        lignes_dupliquees=None,
     ):
         self.valeur = valeur
         self.rang = rang
