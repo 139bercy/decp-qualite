@@ -20,7 +20,7 @@ def run():
     download_data_from_url_to_file(
         conf.download.consolidated_data_schema_url,
         conf.download.consolidated_data_schema_path,
-        stream=True,
+        stream=False,
     )
 
 
