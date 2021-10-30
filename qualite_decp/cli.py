@@ -17,7 +17,7 @@ def command_download(args=None):
 
 def command_audit(args=None):
     """Audite la donnée consolidée et stocke les résultats."""
-    audit.run(rows=args.rows)
+    audit.audit.run(rows=args.rows)
 
 
 def command_web(args=None):
