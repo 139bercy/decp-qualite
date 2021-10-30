@@ -4,6 +4,17 @@ download:
   consolidated_data_path: data/consolidated_data.json
   consolidated_data_schema_path: data/consolidated_data_schema.json
 
+audit:
+  sources:
+    - 'region-bretagne'
+    - 'megalis-bretagne'
+    - 'atexo-maximilien'
+    - 'data.gouv.fr_aife'
+    - 'ternum-bfc'
+    - 'e-marchespublics'
+    - 'grandlyon'
+    - 'marches-publics.info'
+
 web:
   page_title : Qualité des Données Essentielles de la Commande Publique (DECP)
   sidebar_top_text_markdown: Cette application propose une analyse de la qualité des DECP.
