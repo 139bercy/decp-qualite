@@ -18,6 +18,7 @@ elif log_level == "ERROR":
     level = logging.ERROR
 elif log_level == "CRITICAL":
     level = logging.CRITICAL
+print("Log level:", log_level, level)
 logging.basicConfig(
     level=level,
     format="%(asctime)s [%(levelname)s] %(message)s",

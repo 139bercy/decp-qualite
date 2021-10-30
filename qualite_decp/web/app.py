@@ -1,16 +1,22 @@
+import logging
+
 import streamlit as st
 
 from qualite_decp import conf
 from qualite_decp import download
 from qualite_decp.web import build
+from qualite_decp.audit import audit_results
 
 
-def get_audit_results(date):
+def get_audit_results(date, source):
     # temporary code
     if date == "Exemple date 1":
-        return download.open_json("./data/audit_results_date_1.json")
-    if date == "Exemple date 1":
-        return download.open_json("./data/audit_results_date_2.json")
+        path = "./data/audit_results_date_1.json"
+    elif date == "Exemple date 2":
+        path = "./data/audit_results_date_2.json"
+    results = audit_results.AuditResults.from_json(path)
+    result = results.extract_results_for_source(source)
+    return result
 
 
 def run():
@@ -21,6 +27,6 @@ def run():
     selected_source, current_date, old_date = build.sidebar(
         available_sources, available_dates
     )
-    current_results = get_audit_results(current_date)
-    old_results = get_audit_results(old_date)
-    build.page()
+    current_results = get_audit_results(current_date, selected_source)
+    old_results = get_audit_results(old_date, selected_source)
+    build.page(current_results, old_results)

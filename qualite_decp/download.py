@@ -34,7 +34,7 @@ def download_data_from_url_to_file(url: str, path: str, stream: bool = True):
         stream (bool, optional): Si la donnée doit être streamée (recommandé pour les fichiers volumineux). Defaults to True.
     """
     response = requests.get(url, allow_redirects=True, verify=True, stream=stream)
-    with open(path, "wb", encoding="utf-8") as file_writer:
+    with open(path, "wb") as file_writer:
         if stream:
             for counter, chunk in enumerate(response.iter_content(chunk_size=4096)):
                 file_writer.write(chunk)
