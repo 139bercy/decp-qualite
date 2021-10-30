@@ -14,6 +14,7 @@ audit:
     - 'e-marchespublics'
     - 'grandlyon'
     - 'marches-publics.info'
+  results_path: data/audit.json
 
 web:
   page_title : Qualité des Données Essentielles de la Commande Publique (DECP)

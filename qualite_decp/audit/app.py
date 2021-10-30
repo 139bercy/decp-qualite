@@ -5,6 +5,8 @@ import logging
 
 from qualite_decp import download
 from qualite_decp import conf
+from qualite_decp.audit import audit_results
+from qualite_decp.audit import audit_results_one_source
 
 
 def run(rows: int = None):
@@ -32,6 +34,7 @@ def run(rows: int = None):
     )
     # Audit par source
     available_sources = set([m.get("source") for m in data["marches"]])
+    results = audit_results.AuditResults()
     for source in conf.audit.sources:
         source_data = {
             "marches": [
@@ -41,3 +44,7 @@ def run(rows: int = None):
         logging.debug(
             "%d lignes pour la source %s", len(source_data["marches"]), source
         )
+        # TODO
+        source_results = audit_results_one_source.AuditResultsOneSource(source)
+        results.add_results(source_results)
+    results.to_json(conf.audit.results_path)
