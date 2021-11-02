@@ -1,6 +1,9 @@
 # Dossier contenant les jeux de données
 data/
 
+# Gestionnaire de dépendance non utilisé
+pyproject.toml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
