@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 from qualite_decp.audit import app
 
 
@@ -24,7 +26,23 @@ class General:
         return cls(valeur, rang)
 
 
-class Coherence:
+class Measure(ABC):
+    """Abstract class working as an interface for measure classes."""
+
+    @abstractmethod
+    def compute_value(self):
+        pass
+
+    @abstractmethod
+    def to_dict(self):
+        pass
+
+    @abstractmethod
+    def from_dict(d):
+        pass
+
+
+class Coherence(Measure):
     def __init__(
         self,
         valeur: float = None,
@@ -68,7 +86,7 @@ class Coherence:
         return cls(valeur, rang, incoherences_temporelles, incoherences_montant_duree)
 
 
-class Exactitude:
+class Exactitude(Measure):
     def __init__(
         self,
         valeur: float = None,
@@ -112,7 +130,7 @@ class Exactitude:
         return cls(valeur, rang, valeurs_aberrantes, valeurs_extremes)
 
 
-class Validite:
+class Validite(Measure):
     def __init__(
         self,
         valeur: float = None,
@@ -169,7 +187,7 @@ class Validite:
         )
 
 
-class Completude:
+class Completude(Measure):
     def __init__(
         self,
         valeur: float = None,
@@ -213,7 +231,7 @@ class Completude:
         return cls(valeur, rang, donnees_manquantes, valeurs_non_renseignees)
 
 
-class Conformite:
+class Conformite(Measure):
     def __init__(
         self,
         valeur: float = None,
@@ -270,7 +288,7 @@ class Conformite:
         )
 
 
-class Singularite:
+class Singularite(Measure):
     def __init__(
         self,
         valeur: float = None,
