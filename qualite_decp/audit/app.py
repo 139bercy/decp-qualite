@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 
 import jsonschema
+import pandas
 
 from qualite_decp import download
 from qualite_decp import conf
@@ -178,13 +179,80 @@ def has_unsupported_character(text: str):
     return "�" in text
 
 
+def count_duplicated_lines(dataframe: pandas.DataFrame):
+    """Compte le nombre de lignes étant dupliquées sur les coolonnes configurées
+
+    Args:
+        dataframe (pandas.DataFrame): Dataframe contenant les données
+
+    Returns:
+        int: Nombre de lignes étant duliquées
+    """
+    exclude_columns = conf.audit.duplicated_lines.exclude_columns
+    include_columns = [c for c in dataframe.columns if c not in exclude_columns]
+    logging.debug(
+        "Comptage des informations dupliquées dans les colonnes : %s", include_columns
+    )
+    duplicates = dataframe.duplicated(keep=False, subset=include_columns)
+    num_duplicates = duplicates.sum()
+    duplicates_uids = duplicates[duplicates == True].index.to_list()
+    logging.debug(
+        "%d lignes dupliquées trouvées, UIDs : %s", num_duplicates, duplicates_uids
+    )
+    return num_duplicates
+
+
+def get_days_since_last_publishing(dataframe: pandas.DataFrame):
+    """Calcule le nombre de jour depuis la dernière publication.
+
+    Args:
+        dataframe (pandas.DataFrame): Dataframe contenant les données
+
+    Returns:
+        int: Nombre de jours depuis dernière publication
+    """
+    dataframe["datePublicationDonnees"] = pandas.to_datetime(
+        dataframe["datePublicationDonnees"], format="%Y-%m-%d", errors="coerce"
+    )
+    most_recent_date = dataframe["datePublicationDonnees"].max().date()
+    logging.debug("Dernière publication : %s", most_recent_date)
+    today_date = datetime.now().date()
+    delta_days = (today_date - most_recent_date).days
+    logging.debug("Ecart avec aujourd'hui : %d jours", delta_days)
+    return delta_days
+
+
+def count_extreme_values(dataframe: pandas.DataFrame):
+    """Compte le nombre de lignes possédant des valeurs extrêmes dans les colonnes configurées
+
+    Args:
+        dataframe (pandas.DataFrame): Dataframe contenant les données
+
+    Returns:
+        int: Nombre de lignes contenant au moins une valeur extrême
+    """
+    include_columns = conf.audit.extreme_values.include_columns
+    extrem_values_lines_uids = list()
+    num_stdev = conf.audit.extreme_values.num_stdev
+    for col in include_columns:
+        series = dataframe[col]
+        series = series.dropna()
+        series = pandas.to_numeric(series, errors="coerce")
+        series = series.abs()
+        extreme_values = series[(series - series.mean()) > (num_stdev * series.std())]
+        extrem_values_lines_uids += extreme_values.index.to_list()
+    extrem_values_lines_uids = list(set(extrem_values_lines_uids))
+    num_extrem_values_lines = len(extrem_values_lines_uids)
+    logging.debug(
+        "%d lignes avec valeurs extrêmes trouvées, UIDs: %s",
+        num_extrem_values_lines,
+        extrem_values_lines_uids,
+    )
+    return num_extrem_values_lines
+
+
 def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     """Audite la donnée consolidée pour une source.
-
-    TODO : calculer les indicateurs suivants :
-    - lignes_dupliquees
-    - jours_depuis_derniere_publication
-    - valeurs_extremes
 
     Args:
         source_name (str): Nom de la source
@@ -199,7 +267,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     uids = [marche["uid"] for marche in source_data["marches"]]
     non_unique_uids = [uid for uid in uids if len([u for u in uids if u == uid]) > 1]
     num_non_unique_uids = len(non_unique_uids)
-    logging.debug("%d lignes pour la source %s", num_lines, source_name)
+    logging.info("%d lignes pour la source %s", num_lines, source_name)
     if len(source_data["marches"]) == 0:
         identifiants_non_uniques = 0.0
         formats_non_valides = 0.0
@@ -229,6 +297,14 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         incoherences_montant_duree = 0
         valeurs_aberrantes = 0
         valeurs_extremes = 0
+
+        dataframe = download.json_dict_to_dataframe(
+            source_data, record_path="marches", index_column="uid"
+        )
+        lignes_dupliquees = count_duplicated_lines(dataframe)
+        jours_depuis_derniere_publication = get_days_since_last_publishing(dataframe)
+        jours_depuis_derniere_publication = max(jours_depuis_derniere_publication, 100)
+        valeurs_extremes = count_extreme_values(dataframe)
 
         # Analyse ligne par ligne
         for marche in source_data["marches"]:

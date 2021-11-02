@@ -19,6 +19,18 @@ audit:
     borne_inf: 200
     borne_sup: 999999999
   delai_publication: 62
+  extreme_values:
+    include_columns : 
+      - montant
+      - dureeMois
+    num_stdev: 3 #99.7%
+  duplicated_lines:
+    exclude_columns:
+      - uid
+      - id
+      - titulaires
+      - modifications
+      - donneesExecution
 
 web:
   page_title : Qualité des Données Essentielles de la Commande Publique (DECP)

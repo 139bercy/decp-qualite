@@ -5,6 +5,9 @@ import logging
 import json
 
 import requests
+import pandas
+
+pandas.set_option("display.max_columns", None)
 
 from qualite_decp import conf
 
@@ -51,3 +54,21 @@ def open_json(path: str):
 def save_json(data: dict, path: str):
     with open(path, "w", encoding="utf-8") as file_writer:
         json.dump(data, file_writer, ensure_ascii=False, indent=2)
+
+
+def json_dict_to_dataframe(
+    data: dict, record_path: str = None, index_column: str = None
+):
+    """Convertit de la donnée JSON semi-structurée vers un DataFrame.
+
+    Args:
+        data (dict): Donnée issue d'un JSON
+        record_path (str): Chemin vers la liste d'entrées
+
+    Returns:
+        pandas.DataFrame: Donnée aplatie dans un DataFrame.
+    """
+    dataframe = pandas.json_normalize(data, record_path=record_path)
+    if index_column is not None:
+        dataframe = dataframe.set_index(index_column)
+    return dataframe
