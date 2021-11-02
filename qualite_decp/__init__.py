@@ -20,12 +20,13 @@ elif log_level == "ERROR":
 elif log_level == "CRITICAL":
     level = logging.CRITICAL
 print("Log level:", log_level, level)
-logging.basicConfig(
-    stream=sys.stdout,
-    level=level,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%Y/%m/%d %I:%M:%S %p",
-)
+# TODO : fix duplication of logging handlers
+# logging.basicConfig(
+#     #stream=sys.stdout,
+#     level=level,
+#     format="%(asctime)s [%(levelname)s] %(message)s",
+#     datefmt="%Y/%m/%d %I:%M:%S %p",
+# )
 
 # Charge les entrées du fichier de configuration et les
 # place dans un objet python nommé 'conf' utilisé dans le reste du projet
