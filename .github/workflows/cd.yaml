@@ -22,9 +22,9 @@ jobs:
       - name: Run the CLI command to download consolidated data
         run: |
           pipenv run python . download
-      - name: Run the quality audit on first 10 rows
+      - name: Run the quality audit on first 100 rows
         run: |
-          pipenv run python . audit --rows 10
+          pipenv run python . audit --rows 100
       # - name: Upload audit results as artifact
       #   uses: actions/upload-artifact@v2
       #   with: 

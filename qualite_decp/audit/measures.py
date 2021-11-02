@@ -1,3 +1,6 @@
+from qualite_decp.audit import app
+
+
 class General:
     def __init__(self, valeur: float = None, rang: int = None):
         self.valeur = valeur
@@ -25,6 +28,11 @@ class Coherence:
         self.rang = rang
         self.incoherences_temporelles = incoherences_temporelles
         self.incoherences_montant_duree = incoherences_montant_duree
+
+    def compute_value(self):
+        self.valeur = app.divide_and_round(
+            self.incoherences_temporelles + self.incoherences_montant_duree, 2
+        )
 
     def to_dict(self):
         return {
@@ -57,6 +65,11 @@ class Exactitude:
         self.valeurs_aberrantes = valeurs_aberrantes
         self.valeurs_extremes = valeurs_extremes
 
+    def compute_value(self):
+        self.valeur = app.divide_and_round(
+            self.valeurs_aberrantes + self.valeurs_extremes, 2
+        )
+
     def to_dict(self):
         return {
             "synthese": {"valeur": self.valeur, "rang": self.rang},
@@ -80,23 +93,28 @@ class Validite:
         self,
         valeur: float = None,
         rang: int = None,
-        jours_moyens_depuis_derniere_publication: float = None,
+        jours_depuis_derniere_publication: float = None,
         depassements_delai_entre_notification_et_publication: float = None,
     ):
         self.valeur = valeur
         self.rang = rang
-        self.jours_moyens_depuis_derniere_publication = (
-            jours_moyens_depuis_derniere_publication
-        )
+        self.jours_depuis_derniere_publication = jours_depuis_derniere_publication
         self.depassements_delai_entre_notification_et_publication = (
             depassements_delai_entre_notification_et_publication
+        )
+
+    def compute_value(self):
+        self.valeur = app.divide_and_round(
+            self.jours_depuis_derniere_publication
+            + self.depassements_delai_entre_notification_et_publication,
+            2,
         )
 
     def to_dict(self):
         return {
             "synthese": {"valeur": self.valeur, "rang": self.rang},
             "detail": {
-                "jours_moyens_depuis_derniere_publication": self.jours_moyens_depuis_derniere_publication,
+                "jours_depuis_derniere_publication": self.jours_depuis_derniere_publication,
                 "depassements_delai_entre_notification_et_publication": self.depassements_delai_entre_notification_et_publication,
             },
         }
@@ -105,8 +123,8 @@ class Validite:
     def from_dict(cls, d):
         valeur = d["synthese"]["valeur"]
         rang = d["synthese"]["rang"]
-        jours_moyens_depuis_derniere_publication = d["detail"][
-            "jours_moyens_depuis_derniere_publication"
+        jours_depuis_derniere_publication = d["detail"][
+            "jours_depuis_derniere_publication"
         ]
         depassements_delai_entre_notification_et_publication = d["detail"][
             "depassements_delai_entre_notification_et_publication"
@@ -114,7 +132,7 @@ class Validite:
         return cls(
             valeur,
             rang,
-            jours_moyens_depuis_derniere_publication,
+            jours_depuis_derniere_publication,
             depassements_delai_entre_notification_et_publication,
         )
 
@@ -131,6 +149,11 @@ class Completude:
         self.rang = rang
         self.donnees_manquantes = donnees_manquantes
         self.valeurs_non_renseignees = valeurs_non_renseignees
+
+    def compute_value(self):
+        self.valeur = app.divide_and_round(
+            self.donnees_manquantes + self.valeurs_non_renseignees, 2
+        )
 
     def to_dict(self):
         return {
@@ -164,6 +187,14 @@ class Conformite:
         self.caracteres_mal_encodes = caracteres_mal_encodes
         self.formats_non_valides = formats_non_valides
         self.valeurs_non_valides = valeurs_non_valides
+
+    def compute_value(self):
+        self.valeur = app.divide_and_round(
+            self.caracteres_mal_encodes
+            + self.formats_non_valides
+            + self.valeurs_non_valides,
+            3,
+        )
 
     def to_dict(self):
         return {
@@ -203,6 +234,11 @@ class Singularite:
         self.rang = rang
         self.identifiants_non_uniques = identifiants_non_uniques
         self.lignes_dupliquees = lignes_dupliquees
+
+    def compute_value(self):
+        self.valeur = app.divide_and_round(
+            self.identifiants_non_uniques + self.lignes_dupliquees, 2
+        )
 
     def to_dict(self):
         return {

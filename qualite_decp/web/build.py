@@ -1,3 +1,7 @@
+""" Module contenant les fonctions pour construire les différents éléments de la page Web streamlit.
+"""
+
+
 from audit import audit_results_one_source
 import streamlit as st
 
@@ -50,6 +54,37 @@ def page(
     details_container(current_results)
 
 
+def get_metric_value_delta(current_value: float, old_value: float):
+    """Construit les valeurs pour un élément 'streamlit.metric' à partir de la valeur courante et  ancienne
+
+    Args:
+        current_value (float): Valeur actuelle
+        old_value (float): Ancienne valeure
+
+    Returns:
+        str, str: Chaîne pour la valeur et le delta de l'élément
+    """
+    current_value = int(current_value * 100)
+    old_value = int(old_value * 100)
+    value = f"{current_value} %"
+    delta = f"{current_value - old_value} pts"
+    return value, delta
+
+
+def to_percentage(number: float):
+    """Formatte un nombre en pourcentage. Exemple : 0.28 -> 28%
+
+    Args:
+        number (float): Nombre à convertir
+
+    Returns:
+        str: Pourcentage
+    """
+    number = int(number * 100)
+    percentage = f"{number}" + "%"
+    return percentage
+
+
 def global_container(
     current_results: audit_results_one_source.AuditResultsOneSource,
     old_results: audit_results_one_source.AuditResultsOneSource,
@@ -67,33 +102,52 @@ def global_container(
         global_col_7,
     ) = global_container.columns([2, 1, 1, 1, 1, 1, 1])
     global_col_1.metric(
-        "Qualité globale", current_results.general.valeur, old_results.general.valeur
+        "Qualité globale",
+        *get_metric_value_delta(
+            current_results.general.valeur, old_results.general.valeur
+        ),
     )
     global_col_1.markdown(f"*Rang source:* **{current_results.general.rang}**")
     global_col_2.metric(
-        "Validité", current_results.validite.valeur, old_results.validite.valeur
+        "Validité",
+        *get_metric_value_delta(
+            current_results.validite.valeur, old_results.validite.valeur
+        ),
     )
     global_col_2.markdown(f"*Rang:* **{current_results.validite.rang}**")
     global_col_3.metric(
-        "Complétude", current_results.completude.valeur, old_results.completude.valeur
+        "Complétude",
+        *get_metric_value_delta(
+            current_results.completude.valeur, old_results.completude.valeur
+        ),
     )
     global_col_3.markdown(f"*Rang:* **{current_results.completude.rang}**")
     global_col_4.metric(
-        "Conformité", current_results.conformite.valeur, old_results.conformite.valeur
+        "Conformité",
+        *get_metric_value_delta(
+            current_results.conformite.valeur, old_results.conformite.valeur
+        ),
     )
     global_col_4.markdown(f"*Rang:* **{current_results.conformite.rang}**")
     global_col_5.metric(
-        "Cohérence", current_results.coherence.valeur, old_results.coherence.valeur
+        "Cohérence",
+        *get_metric_value_delta(
+            current_results.coherence.valeur, old_results.coherence.valeur
+        ),
     )
     global_col_5.markdown(f"*Rang:* **{current_results.coherence.rang}**")
     global_col_6.metric(
         "Singularité",
-        current_results.singularite.valeur,
-        old_results.singularite.valeur,
+        *get_metric_value_delta(
+            current_results.singularite.valeur, old_results.singularite.valeur
+        ),
     )
     global_col_6.markdown(f"*Rang:* **{current_results.singularite.rang}**")
     global_col_7.metric(
-        "Exactitude", current_results.exactitude.valeur, old_results.exactitude.valeur
+        "Exactitude",
+        *get_metric_value_delta(
+            current_results.exactitude.valeur, old_results.exactitude.valeur
+        ),
     )
     global_col_7.markdown(f"*Rang:* **{current_results.exactitude.rang}**")
 
@@ -116,12 +170,12 @@ def detailed_singularite_container(parent_element, singularite: measures.Singula
     singularite_container.markdown("**Singularité**")
     singularite_container.info(
         f"""
-        **{singularite.identifiants_non_uniques}** identifiants non uniques
+        **{to_percentage(singularite.identifiants_non_uniques)}** identifiants non uniques
         """
     )
     singularite_container.info(
         f"""
-        **{singularite.lignes_dupliquees}** lignes dupliquées
+        **{to_percentage(singularite.lignes_dupliquees)}** lignes dupliquées
         """
     )
 
@@ -131,12 +185,12 @@ def detailed_validite_container(parent_element, validite: measures.Validite):
     validite_container.markdown("**Validité**")
     validite_container.info(
         f"""
-        **{validite.jours_moyens_depuis_derniere_publication}** jours depuis la dernière publication
+        **{to_percentage(validite.jours_depuis_derniere_publication)}** jours depuis la dernière publication
         """
     )
     validite_container.info(
         f"""
-        **{validite.depassements_delai_entre_notification_et_publication}** dépassements du délai entre notification et publication
+        **{to_percentage(validite.depassements_delai_entre_notification_et_publication)}** dépassements du délai entre notification et publication
         """
     )
 
@@ -146,12 +200,12 @@ def detailed_completude_container(parent_element, completude: measures.Completud
     completude_container.markdown("**Complétude**")
     completude_container.info(
         f"""
-        **{completude.donnees_manquantes}** données manquantes
+        **{to_percentage(completude.donnees_manquantes)}** données manquantes
         """
     )
     completude_container.info(
         f"""
-        **{completude.valeurs_non_renseignees}** valeurs non renseignées
+        **{to_percentage(completude.valeurs_non_renseignees)}** valeurs non renseignées
         """
     )
 
@@ -161,17 +215,17 @@ def detailed_conformite_container(parent_element, conformite: measures.Conformit
     conformite_container.markdown("**Conformité**")
     conformite_container.info(
         f"""
-        **{conformite.caracteres_mal_encodes}** caractères mal encodés ou illisibles
+        **{to_percentage(conformite.caracteres_mal_encodes)}** caractères mal encodés ou illisibles
         """
     )
     conformite_container.info(
         f"""
-        **{conformite.formats_non_valides}** formats non respectés
+        **{to_percentage(conformite.formats_non_valides)}** formats non respectés
         """
     )
     conformite_container.info(
         f"""
-        **{conformite.valeurs_non_valides}** valeurs invalides
+        **{to_percentage(conformite.valeurs_non_valides)}** valeurs invalides
         """
     )
 
@@ -181,12 +235,12 @@ def detailed_exactitude_container(parent_element, exactitude: measures.Exactitud
     exactitude_container.markdown("**Exactitude**")
     exactitude_container.info(
         f"""
-        **{exactitude.valeurs_aberrantes}** valeurs aberrantes
+        **{to_percentage(exactitude.valeurs_aberrantes)}** valeurs aberrantes
         """
     )
     exactitude_container.info(
         f"""
-        **{exactitude.valeurs_extremes}** valeurs extrêmes
+        **{to_percentage(exactitude.valeurs_extremes)}** valeurs extrêmes
         """
     )
 
@@ -196,11 +250,11 @@ def detailed_coherence_container(parent_element, coherence: measures.Coherence):
     coherence_container.markdown("**Cohérence**")
     coherence_container.info(
         f"""
-        **{coherence.incoherences_temporelles}** incohérences temporelles entre notification et publication
+        **{to_percentage(coherence.incoherences_temporelles)}** incohérences temporelles entre notification et publication
         """
     )
     coherence_container.info(
         f"""
-        **{coherence.incoherences_montant_duree}** incohérences entre montant et durée
+        **{to_percentage(coherence.incoherences_montant_duree)}** incohérences entre montant et durée
         """
     )

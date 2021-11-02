@@ -15,6 +15,10 @@ audit:
     - 'grandlyon'
     - 'marches-publics.info'
   results_path: data/audit.json
+  bornes_montant_aberrant:
+    borne_inf: 200
+    borne_sup: 999999999
+  delai_publication: 62
 
 web:
   page_title : Qualité des Données Essentielles de la Commande Publique (DECP)
