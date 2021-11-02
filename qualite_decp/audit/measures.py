@@ -10,7 +10,15 @@ class General:
         return {"valeur": self.valeur, "rang": self.rang}
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict):
+        """Instancie une classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            General: Instance créée
+        """
         valeur = d["valeur"]
         rang = d["rang"]
         return cls(valeur, rang)
@@ -44,7 +52,15 @@ class Coherence:
         }
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict):
+        """Instancie une classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            Coherence: Instance créée
+        """
         valeur = d["synthese"]["valeur"]
         rang = d["synthese"]["rang"]
         incoherences_temporelles = d["detail"]["incoherences_temporelles"]
@@ -80,7 +96,15 @@ class Exactitude:
         }
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict):
+        """Instancie une classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            Exactitude: Instance créée
+        """
         valeur = d["synthese"]["valeur"]
         rang = d["synthese"]["rang"]
         valeurs_aberrantes = d["detail"]["valeurs_aberrantes"]
@@ -120,7 +144,15 @@ class Validite:
         }
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict):
+        """Instancie une classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            Validite: Instance créée
+        """
         valeur = d["synthese"]["valeur"]
         rang = d["synthese"]["rang"]
         jours_depuis_derniere_publication = d["detail"][
@@ -165,7 +197,15 @@ class Completude:
         }
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict):
+        """Instancie une classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            Completude: Instance créée
+        """
         valeur = d["synthese"]["valeur"]
         rang = d["synthese"]["rang"]
         donnees_manquantes = d["detail"]["donnees_manquantes"]
@@ -207,7 +247,15 @@ class Conformite:
         }
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict):
+        """Instancie une classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            Conformite: Instance créée
+        """
         valeur = d["synthese"]["valeur"]
         rang = d["synthese"]["rang"]
         caracteres_mal_encodes = d["detail"]["caracteres_mal_encodes"]
@@ -250,7 +298,15 @@ class Singularite:
         }
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict):
+        """Instancie une classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            Singularite: Instance créée
+        """
         valeur = d["synthese"]["valeur"]
         rang = d["synthese"]["rang"]
         identifiants_non_uniques = d["detail"]["identifiants_non_uniques"]

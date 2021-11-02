@@ -13,14 +13,28 @@ class AuditResults:
         self.results = results
 
     def extract_results_for_source(self, source: str):
+        """Extrait les résultats d'audit pour une source.
+
+        Args:
+            source (str): Nom de la source
+
+        Returns:
+            [audit_results_one_source.AuditResultsOneSource]: Résultats d'audit
+        """
         return [r for r in self.results if r.source == source][0]
 
     def add_results(
         self, source_results: audit_results_one_source.AuditResultsOneSource
     ):
+        """Ajoute un résultat d'audit d'une source à l'instance
+
+        Args:
+            source_results (audit_results_one_source.AuditResultsOneSource): Résultats à ajouter
+        """
         self.results.append(source_results)
 
     def compute_ranks(self):
+        """Calcule les rangs des sources pour tous les indicateurs"""
         general_values = dict()
         validite_values = dict()
         completude_values = dict()
@@ -54,19 +68,32 @@ class AuditResults:
     def to_list(self):
         return [r.to_dict() for r in self.results]
 
-    def to_json(self, path):
+    def to_json(self, path: str):
+        """Sauvegarde la classe dans un fichier JSON.
+
+        Args:
+            path (str): Chemin vers le fichier .json
+        """
         l = self.to_list()
         download.save_json(l, path)
 
     @classmethod
-    def from_list(cls, l):
+    def from_list(cls, l: list):
         results = [
             audit_results_one_source.AuditResultsOneSource.from_dict(le) for le in l
         ]
         return cls(results=results)
 
     @classmethod
-    def from_json(cls, path):
+    def from_json(cls, path: str):
+        """Crée une instance de la classe depuis un fichier JSON.
+
+        Args:
+        path (str): Chemin du fichier .json
+
+        Returns:
+            AuditResults: Instance créée
+        """
         l = download.open_json(path)
         return cls.from_list(l)
 

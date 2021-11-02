@@ -73,6 +73,14 @@ class AuditResultsOneSource:
 
     @classmethod
     def from_dict(cls, d):
+        """Crée une instance de la classe depuis un dictionnaire.
+
+        Args:
+            d (dict): Dictionnaire
+
+        Returns:
+            AuditResultsOneSource: Instance créée
+        """
         source = d["source"]
         general = measures.General.from_dict(d["general"])
         validite = measures.Validite.from_dict(d["validite"])
