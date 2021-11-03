@@ -1,10 +1,14 @@
 from datetime import datetime
 import logging
+import zipfile
+import json
+import os
 
 import streamlit as st
 import requests
 
 from qualite_decp import conf
+from qualite_decp import download
 from qualite_decp.audit import audit_results_one_source
 from qualite_decp.audit import audit_results
 
@@ -35,11 +39,21 @@ def download_json_from_url(url: str):
     Returns:
         dict: Dictionnaire issu du fichier JSON
     """
-    print("Requesting", url)
     response = requests.get(url)
     if response.status_code == 403:
         raise Exception(f"Erreur 403 en requêtant {url} : {response.content}")
     return response.json()
+
+
+def get_github_auth():
+    """Obtient un tuple d'authentification pour l'API GitHub.
+
+    Returns:
+        (str, str): Tuple (utilisateur, jeton) à utiliser lors des appels API
+    """
+    username = os.environ["GITHUB_USERNAME"]
+    token = os.environ["GITHUB_TOKEN"]
+    return (username, token)
 
 
 def list_artifacts():
@@ -61,12 +75,34 @@ def list_artifacts():
     results = dict()
     for artifact in artifacts:
         artifact_date = artifact.get("created_at")
-        artifact_url = artifact.get("url")
+        artifact_url = artifact.get("archive_download_url")
         artifact_date = datetime.strptime(artifact_date, "%Y-%m-%dT%H:%M:%SZ").date()
         results[artifact_date] = artifact_url
     logging.debug(f"{len(results)} artifacts avec date unique")
     results = dict(sorted(results.items()))
     return results
+
+
+@st.cache
+def load_artifact_archive_from_url(archive_url: str):
+    """Charge un artifact archivé sous forme de dictionnaire depuis une URL.
+
+    Args:
+        archive_url (str): URL vers un artifact de type JSON archivé (ZIP)
+
+    Returns:
+        dict: Fichier chargé
+    """
+    auth = get_github_auth()
+    download.download_data_from_url_to_file(
+        archive_url, "./data/artifact.zip", stream=True, auth=auth
+    )
+    with zipfile.ZipFile("./data/artifact.zip", "r") as z:
+        for filename in z.namelist():
+            with z.open(filename) as f:
+                data = f.read()
+                d = json.loads(data)
+                return d
 
 
 def get_audit_results(
@@ -83,9 +119,7 @@ def get_audit_results(
     """
     artifacts_dict = list_artifacts()
     url = artifacts_dict[date]
-    res_dict = download_json_from_url(url)
-    # TODO
-    # results = audit_results.AuditResults.from_list(res_dict)
-    results = audit_results.AuditResults.from_json("./data/audit.json")
+    artifact = load_artifact_archive_from_url(url)
+    results = audit_results.AuditResults.from_list(artifact)
     result = results.extract_results_for_source(source)
     return result

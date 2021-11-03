@@ -31,6 +31,20 @@ optional arguments:
   -h, --help            show this help message and exit
 ```
 
+Pour la commande `web` les variables d'environnements `GITHUB_USERNAME` et `GITHUB_TOKEN` doivent être définies. Le jeton d'accès doit avoir au moins le scope `public_repo` (accès aux projets publics).
+
+"""shell
+# macOS ou Linux
+export GITHUB_USERNAME="<Nom d'utilisateur GitHub>"
+export GITHUB_TOKEN="<Jeton d'accès>"
+# Windows
+SET GITHUB_USERNAME=<Nom d'utilisateur GitHub>
+SET GITHUB_TOKEN=<Jeton d'accès>
+# PowerShell
+$Env:GITHUB_USERNAME="<Nom d'utilisateur GitHub>"
+$Env:GITHUB_TOKEN="<Jeton d'accès>"
+"""
+
 ### Développeur
 
 Installer les dépendances, y compris celles de développement  :
