@@ -79,7 +79,6 @@ class AuditResults:
 
     @classmethod
     def from_list(cls, l: list):
-        print(l)
         results = [
             audit_results_one_source.AuditResultsOneSource.from_dict(le) for le in l
         ]
