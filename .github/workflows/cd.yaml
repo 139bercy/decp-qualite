@@ -31,3 +31,9 @@ jobs:
           name: audit-1000lignes.json
           path: ./data/audit-1000lignes.json
           retention-days: 90
+      - name: Upload source data as artifact
+        uses: actions/upload-artifact@v2
+        with: 
+          name: decp.json
+          path: ./data/decp.json
+          retention-days: 90

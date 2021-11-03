@@ -1,8 +1,8 @@
 download:
   url_donnees_consolidees: https://www.data.gouv.fr/fr/datasets/r/16962018-5c31-4296-9454-5998585496d2
   url_schema_donnees: https://schema.data.gouv.fr/schemas/139bercy/format-commande-publique/latest/marches.json
-  chemin_donnes_consolidees: data/consolidated_data.json
-  chemin_schema_donnees: data/consolidated_data_schema.json
+  chemin_donnes_consolidees: data/decp.json
+  chemin_schema_donnees: data/schema.json
 
 audit:
   sources:
