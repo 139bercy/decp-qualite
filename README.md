@@ -5,9 +5,11 @@
 ![Actions badge](https://github.com/139bercy/decp-qualite/actions/workflows/cd.yaml/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Prérequis :
+Pré-requis :
 * [pipenv](https://pipenv-fork.readthedocs.io/en/latest/)
 * [python 3.8](https://www.python.org/downloads/release/python-3810/)
+
+Ce projet permet d'auditer la qualité des données essentielles de la commande publique consolidées sur data.gouv.fr. Les résultats sont affichés dans une application Web interactive.
 
 ### Utilisateur
 
@@ -42,3 +44,16 @@ pipenv install --dev --python 3.8
 pre-commit install
 pre-commit autoupdate
 ```
+
+### Fonctionnement
+
+| GitHub Actions workflow | GitHub Actions artifacts store | Streamlit servers | Utilisateur |
+|:---:|:---:|:---:|:---:|
+| Télécharge la donnée | - | - | - |
+| Audite la qualité | - | - | - |
+| - | Stocke les résultats | - | - |
+| - | - | Exécute l'application Web | - |
+
+| GitHub Actions workflow | GitHub Actions artifacts store | Streamlit servers |
+|:---:|:---:|:---:|
+| Télécharge la donnée <br> Audite la qualité → | Stocke les résultats | ← Exécute l'application Web | 
