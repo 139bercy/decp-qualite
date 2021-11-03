@@ -66,7 +66,7 @@ def get_metric_value_delta(current_value: float, old_value: float):
     """
     current_value = int(current_value * 100)
     old_value = int(old_value * 100)
-    value = f"{current_value} %"
+    value = f"{current_value}"  # " %"
     delta = f"{current_value - old_value} pts"
     return value, delta
 
