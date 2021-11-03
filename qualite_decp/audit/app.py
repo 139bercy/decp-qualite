@@ -155,9 +155,9 @@ def are_market_amount_and_duration_inconsistent(amount: int, duration: int):
     """
     if duration == amount:
         return True
-    elif amount / duration < 100:
+    elif amount / max(duration, 1) < 100:
         return True
-    elif amount / duration < 1000 and amount < 200000:
+    elif amount / max(duration, 1) < 1000 and amount < 200000:
         return True
     elif duration in [360, 365, 366] and amount < 10000000:
         return True
