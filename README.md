@@ -47,13 +47,6 @@ pre-commit autoupdate
 
 ### Fonctionnement
 
-| GitHub Actions workflow | GitHub Actions artifacts store | Streamlit servers | Utilisateur |
-|:---:|:---:|:---:|:---:|
-| Télécharge la donnée | - | - | - |
-| Audite la qualité | - | - | - |
-| - | Stocke les résultats | - | - |
-| - | - | Exécute l'application Web | - |
-
 | GitHub Actions workflow | GitHub Actions artifacts store | Streamlit servers |
 |:---:|:---:|:---:|
-| Télécharge la donnée <br> Audite la qualité → | Stocke les résultats | ← Exécute l'application Web | 
+| Télécharge la donnée <br> Audite la qualité <br> → | <br><br>Stocke les résultats | <br><br><br>← <br>Exécute l'application Web | 
