@@ -14,7 +14,8 @@ audit:
     - 'e-marchespublics'
     - 'grandlyon'
     - 'marches-publics.info'
-  chemin_resultats: data/audit.json
+  chemin_resultats: data/audit-1000lignes.json
+  nom_artifact_resultats: audit-1000lignes.json
   bornes_montant_aberrant:
     borne_inf: 200
     borne_sup: 999999999
@@ -37,3 +38,4 @@ web:
   texte_haut_barre_laterale: Cette application propose une analyse de la qualité des DECP.
   texte_bas_barre_laterale: Consultez la documentation pour plus d'information.
   titre: Qualité des Données Essentielles de la Commande Publique (DECP)
+  projet_github: 139bercy/decp-qualite
