@@ -188,7 +188,7 @@ def count_duplicated_lines(dataframe: pandas.DataFrame):
     Returns:
         int: Nombre de lignes étant duliquées
     """
-    exclude_columns = conf.audit.duplicated_lines.exclude_columns
+    exclude_columns = conf.audit.lignes_dupliquees.colonnes_excluses
     include_columns = [c for c in dataframe.columns if c not in exclude_columns]
     logging.debug(
         "Comptage des informations dupliquées dans les colonnes : %s", include_columns
@@ -231,9 +231,9 @@ def count_extreme_values(dataframe: pandas.DataFrame):
     Returns:
         int: Nombre de lignes contenant au moins une valeur extrême
     """
-    include_columns = conf.audit.extreme_values.include_columns
+    include_columns = conf.audit.valeurs_extremes.colonnes_incluses
     extrem_values_lines_uids = list()
-    num_stdev = conf.audit.extreme_values.num_stdev
+    num_stdev = conf.audit.valeurs_extremes.nombre_deviations_standards
     for col in include_columns:
         series = dataframe[col]
         series = series.dropna()
@@ -428,8 +428,8 @@ def run(rows: int = None):
     Args:
         rows (int, optional): Nombre de lignes desquelles auditer la qualité. Defaults to None.
     """
-    data = download.open_json(conf.download.consolidated_data_path)
-    schema = download.open_json(conf.download.consolidated_data_schema_path)
+    data = download.open_json(conf.download.chemin_donnes_consolidees)
+    schema = download.open_json(conf.download.chemin_schema_donnees)
     # Choix d'un sous-ensemble des marchés, si requis
     if rows is not None:
         data["marches"] = data["marches"][:rows]
@@ -459,4 +459,4 @@ def run(rows: int = None):
         results.add_results(new_source_results)
 
     results.compute_ranks()
-    results.to_json(conf.audit.results_path)
+    results.to_json(conf.audit.chemin_resultats)

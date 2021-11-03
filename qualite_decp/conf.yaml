@@ -1,8 +1,8 @@
 download:
-  consolidated_data_url: https://www.data.gouv.fr/fr/datasets/r/16962018-5c31-4296-9454-5998585496d2
-  consolidated_data_schema_url: https://schema.data.gouv.fr/schemas/139bercy/format-commande-publique/latest/marches.json
-  consolidated_data_path: data/consolidated_data.json
-  consolidated_data_schema_path: data/consolidated_data_schema.json
+  url_donnees_consolidees: https://www.data.gouv.fr/fr/datasets/r/16962018-5c31-4296-9454-5998585496d2
+  url_schema_donnees: https://schema.data.gouv.fr/schemas/139bercy/format-commande-publique/latest/marches.json
+  chemin_donnes_consolidees: data/consolidated_data.json
+  chemin_schema_donnees: data/consolidated_data_schema.json
 
 audit:
   sources:
@@ -14,18 +14,18 @@ audit:
     - 'e-marchespublics'
     - 'grandlyon'
     - 'marches-publics.info'
-  results_path: data/audit.json
+  chemin_resultats: data/audit.json
   bornes_montant_aberrant:
     borne_inf: 200
     borne_sup: 999999999
   delai_publication: 62
-  extreme_values:
-    include_columns : 
+  valeurs_extremes:
+    colonnes_incluses : 
       - montant
       - dureeMois
-    num_stdev: 3 #99.7%
-  duplicated_lines:
-    exclude_columns:
+    nombre_deviations_standards: 3 #99.7% sous l'hypothèse d'une distribution normale
+  lignes_dupliquees:
+    colonnes_excluses:
       - uid
       - id
       - titulaires
@@ -33,7 +33,7 @@ audit:
       - donneesExecution
 
 web:
-  page_title : Qualité des Données Essentielles de la Commande Publique (DECP)
-  sidebar_top_text_markdown: Cette application propose une analyse de la qualité des DECP.
-  sidebar_bottom_text_markdown: Consultez la documentation pour plus d'information.
-  title: Qualité des Données Essentielles de la Commande Publique (DECP)
+  titre_page : Qualité des Données Essentielles de la Commande Publique (DECP)
+  texte_haut_barre_laterale: Cette application propose une analyse de la qualité des DECP.
+  texte_bas_barre_laterale: Consultez la documentation pour plus d'information.
+  titre: Qualité des Données Essentielles de la Commande Publique (DECP)

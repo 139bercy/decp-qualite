@@ -14,14 +14,14 @@ def run():
     """Télécharge la donnée consolidée (.json depuis data.gouv.fr)."""
     logging.info("Téléchargement des données consolidées...")
     download_data_from_url_to_file(
-        conf.download.consolidated_data_url,
-        conf.download.consolidated_data_path,
+        conf.download.url_donnees_consolidees,
+        conf.download.chemin_donnes_consolidees,
         stream=True,
     )
     logging.info("Téléchargement du schéma de données...")
     download_data_from_url_to_file(
-        conf.download.consolidated_data_schema_url,
-        conf.download.consolidated_data_schema_path,
+        conf.download.url_schema_donnees,
+        conf.download.chemin_schema_donnees,
         stream=False,
     )
 

@@ -13,7 +13,7 @@ from qualite_decp.audit import measures
 def page_config():
     """Construit la configuration Streamlit de la page"""
     st.set_page_config(
-        page_title=conf.web.page_title,
+        page_title=conf.web.titre_page,
         page_icon="qualite_decp/web/static/favicon.ico",
         layout="wide",
         initial_sidebar_state="auto",
@@ -30,7 +30,7 @@ def sidebar(available_sources: list, available_dates: list):
     Returns:
         str, str, str: Source, date courante et date de comparaison sélectionnées
     """
-    st.sidebar.markdown(conf.web.sidebar_top_text_markdown)
+    st.sidebar.markdown(conf.web.texte_haut_barre_laterale)
     selected_source = st.sidebar.selectbox("Source à analyser", available_sources)
     sidebar_column_1, sidebar_column_2 = st.sidebar.columns(2)
     with sidebar_column_1:
@@ -39,7 +39,7 @@ def sidebar(available_sources: list, available_dates: list):
         )
     with sidebar_column_2:
         old_date = st.selectbox("Date à comparer", available_dates, index=0)
-    st.sidebar.markdown(conf.web.sidebar_bottom_text_markdown)
+    st.sidebar.markdown(conf.web.texte_bas_barre_laterale)
     return selected_source, current_date, old_date
 
 
@@ -49,7 +49,7 @@ def page(
 ):
     """Construit la partie principale de la page"""
     st.image("qualite_decp/web/static/logo.png", width=300)
-    st.title(conf.web.title)
+    st.title(conf.web.titre)
     global_container(current_results, old_results)
     details_container(current_results)
 
