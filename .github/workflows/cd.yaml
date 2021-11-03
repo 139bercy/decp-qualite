@@ -1,7 +1,7 @@
 name: cd
 on:
-  #schedule:
-  #  - cron:  '0 8,14 * * *'
+  schedule:
+    - cron:  '0 8 * * *' # tous les jours à 8h
   push:
     branches: 
       - main
