@@ -7,8 +7,6 @@ import json
 import requests
 import pandas
 
-pandas.set_option("display.max_columns", None)
-
 from qualite_decp import conf
 
 
@@ -47,11 +45,25 @@ def download_data_from_url_to_file(url: str, path: str, stream: bool = True):
 
 
 def open_json(path: str):
+    """Charge un fichier JSON sous forme de dictionnaire
+
+    Args:
+        path (str): CHemin vers un fichier JSON (utf8)
+
+    Returns:
+        dict: Données du fichier
+    """
     with open(path, "rb") as file_reader:
         return json.loads(file_reader.read().decode("utf-8"))
 
 
 def save_json(data: dict, path: str):
+    """Stocke un dictionnaire sous forme de fichier JSON
+
+    Args:
+        data (dict): Dictionnaire à stocker
+        path (str): Chemin vers le fichier (utf8)
+    """
     with open(path, "w", encoding="utf-8") as file_writer:
         json.dump(data, file_writer, ensure_ascii=False, indent=2)
 
