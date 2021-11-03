@@ -39,3 +39,5 @@ web:
   texte_bas_barre_laterale: Consultez la documentation pour plus d'information.
   titre: Qualité des Données Essentielles de la Commande Publique (DECP)
   projet_github: 139bercy/decp-qualite
+  texte_synthese: Les valeurs affichées sont calculées sur une échelle de 0 (toutes les données présentent l'ensemble des défauts de qualité audités) à 100 (la qualité des données est parfaite) à partir des indicateurs sous-jacent détaillés plus bas.
+  texte_details: Les valeurs exprimées en pourcentage (%) représentent la part de lignes concernées par la non-qualité.

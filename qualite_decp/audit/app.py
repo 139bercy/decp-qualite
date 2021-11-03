@@ -303,7 +303,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         )
         lignes_dupliquees = count_duplicated_lines(dataframe)
         jours_depuis_derniere_publication = get_days_since_last_publishing(dataframe)
-        jours_depuis_derniere_publication = max(jours_depuis_derniere_publication, 100)
+        jours_depuis_derniere_publication = min(jours_depuis_derniere_publication, 100)
         valeurs_extremes = count_extreme_values(dataframe)
 
         # Analyse ligne par ligne

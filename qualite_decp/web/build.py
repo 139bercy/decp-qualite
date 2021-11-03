@@ -92,6 +92,7 @@ def global_container(
     """Construit la section contenant les indicateurs de qualité globale"""
     global_container = st.container()
     global_container.subheader("Synthèse")
+    global_container.markdown(f"{conf.web.texte_synthese}")
     (
         global_col_1,
         global_col_2,
@@ -156,6 +157,7 @@ def details_container(current_results: audit_results_one_source.AuditResultsOneS
     """Construit la section contenant les indicateurs de qualité détaillés"""
     details_container = st.container()
     details_container.subheader("Détails des indicateurs")
+    details_container.markdown(f"{conf.web.texte_details}")
     details_col_1, details_col_2, details_col_3 = details_container.columns(3)
     detailed_singularite_container(details_col_1, current_results.singularite)
     detailed_validite_container(details_col_1, current_results.validite)
@@ -185,7 +187,7 @@ def detailed_validite_container(parent_element, validite: measures.Validite):
     validite_container.markdown("**Validité**")
     validite_container.info(
         f"""
-        **{to_percentage(validite.jours_depuis_derniere_publication)}** jours depuis la dernière publication
+        **{validite.jours_depuis_derniere_publication}{"+" if validite.jours_depuis_derniere_publication==100 else ""}** jours depuis la dernière publication
         """
     )
     validite_container.info(
