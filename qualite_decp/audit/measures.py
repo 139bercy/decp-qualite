@@ -56,7 +56,7 @@ class Coherence(Measure):
         self.incoherences_montant_duree = incoherences_montant_duree
 
     def compute_value(self):
-        self.valeur = app.divide_and_round(
+        self.valeur = 1.0 - app.divide_and_round(
             self.incoherences_temporelles + self.incoherences_montant_duree, 2
         )
 
@@ -100,7 +100,7 @@ class Exactitude(Measure):
         self.valeurs_extremes = valeurs_extremes
 
     def compute_value(self):
-        self.valeur = app.divide_and_round(
+        self.valeur = 1.0 - app.divide_and_round(
             self.valeurs_aberrantes + self.valeurs_extremes, 2
         )
 
@@ -146,7 +146,7 @@ class Validite(Measure):
         )
 
     def compute_value(self):
-        self.valeur = app.divide_and_round(
+        self.valeur = 1.0 - app.divide_and_round(
             self.jours_depuis_derniere_publication
             + self.depassements_delai_entre_notification_et_publication,
             2,
@@ -201,7 +201,7 @@ class Completude(Measure):
         self.valeurs_non_renseignees = valeurs_non_renseignees
 
     def compute_value(self):
-        self.valeur = app.divide_and_round(
+        self.valeur = 1.0 - app.divide_and_round(
             self.donnees_manquantes + self.valeurs_non_renseignees, 2
         )
 
@@ -247,7 +247,7 @@ class Conformite(Measure):
         self.valeurs_non_valides = valeurs_non_valides
 
     def compute_value(self):
-        self.valeur = app.divide_and_round(
+        self.valeur = 1.0 - app.divide_and_round(
             self.caracteres_mal_encodes
             + self.formats_non_valides
             + self.valeurs_non_valides,
@@ -302,7 +302,7 @@ class Singularite(Measure):
         self.lignes_dupliquees = lignes_dupliquees
 
     def compute_value(self):
-        self.valeur = app.divide_and_round(
+        self.valeur = 1.0 - app.divide_and_round(
             self.identifiants_non_uniques + self.lignes_dupliquees, 2
         )
 
