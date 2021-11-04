@@ -217,7 +217,7 @@ def get_days_since_last_publishing(dataframe: pandas.DataFrame):
     most_recent_date = dataframe["datePublicationDonnees"].max().date()
     logging.debug("Dernière publication : %s", most_recent_date)
     today_date = datetime.now().date()
-    delta_days = (today_date - most_recent_date).days
+    delta_days = int((today_date - most_recent_date).days)
     logging.debug("Ecart avec aujourd'hui : %d jours", delta_days)
     return delta_days
 
@@ -276,7 +276,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         valeurs_non_renseignees = 0.0
         lignes_dupliquees = 0.0
         caracteres_mal_encodes = 0.0
-        jours_depuis_derniere_publication = 0.0
+        jours_depuis_derniere_publication = 0
         depassements_delai_entre_notification_et_publication = 0.0
         incoherences_temporelles = 0.0
         incoherences_montant_duree = 0.0
