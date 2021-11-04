@@ -99,6 +99,9 @@ class AuditResults:
 
     @staticmethod
     def rank_dict(d):
-        r = {key: rank for rank, key in enumerate(sorted(set(d.values())), 1)}
+        r = {
+            key: rank
+            for rank, key in enumerate(sorted(set(d.values()), reverse=True), 1)
+        }
         r = {k: r[v] for k, v in d.items()}
         return r
