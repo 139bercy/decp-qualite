@@ -1,4 +1,4 @@
-name: cd
+name: run
 on:
   schedule:
     - cron:  '0 8 * * *' # tous les jours à 8h
