@@ -2,9 +2,6 @@ name: cd
 on:
   schedule:
     - cron:  '0 8 * * *' # tous les jours à 8h
-  push:
-    branches: 
-      - main
 jobs:
   download-data-and-audit-quality:
     runs-on: ubuntu-latest
