@@ -20,10 +20,13 @@ def run():
     selected_source, selected_current_date, selected_comparison_date = build.sidebar(
         available_sources, available_dates
     )
-    current_results = artifacts.get_audit_results(
-        selected_current_date, selected_source
-    )
-    comparison_results = artifacts.get_audit_results(
-        selected_comparison_date, selected_source
-    )
-    build.page(current_results, comparison_results)
+    if len(artifacts_dict) > 0:
+        current_results = artifacts.get_audit_results(
+            selected_current_date, selected_source
+        )
+        comparison_results = artifacts.get_audit_results(
+            selected_comparison_date, selected_source
+        )
+        build.page(current_results, comparison_results)
+    else:
+        build.no_data_page()

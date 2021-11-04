@@ -43,15 +43,26 @@ def sidebar(available_sources: list, available_dates: list):
     return selected_source, current_date, old_date
 
 
+def no_date_page():
+    """Construit la partie principale de la page si aucune donnée n'est disponible"""
+    title()
+    st.error("Aucune donnée de résultat d'audit de qualité n'est disponible.")
+
+
 def page(
     current_results: audit_results_one_source.AuditResultsOneSource,
     old_results: audit_results_one_source.AuditResultsOneSource,
 ):
     """Construit la partie principale de la page"""
-    st.image("qualite_decp/web/static/logo.png", width=300)
-    st.title(conf.web.titre)
+    title()
     global_container(current_results, old_results)
     details_container(current_results)
+
+
+def title():
+    """Construit le titre de la page"""
+    st.image("qualite_decp/web/static/logo.png", width=300)
+    st.title(conf.web.titre)
 
 
 def get_metric_value_delta(current_value: float, old_value: float):
