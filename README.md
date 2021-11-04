@@ -33,7 +33,7 @@ optional arguments:
 
 Pour la commande `web` les variables d'environnements `GITHUB_USERNAME` et `GITHUB_TOKEN` doivent être définies. Le jeton d'accès doit avoir au moins le scope `public_repo` (accès aux projets publics).
 
-"""shell
+```shell
 # macOS ou Linux
 export GITHUB_USERNAME="<Nom d'utilisateur GitHub>"
 export GITHUB_TOKEN="<Jeton d'accès>"
@@ -43,7 +43,7 @@ SET GITHUB_TOKEN=<Jeton d'accès>
 # PowerShell
 $Env:GITHUB_USERNAME="<Nom d'utilisateur GitHub>"
 $Env:GITHUB_TOKEN="<Jeton d'accès>"
-"""
+```
 
 ### Développeur
 
