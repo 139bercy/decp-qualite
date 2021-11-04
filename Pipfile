@@ -11,6 +11,7 @@ pyyaml = "*"
 munch = "*"
 qualite-decp = {editable = true, path = "./qualite_decp"}
 pandas = "*"
+tqdm = "*"
 
 [dev-packages]
 pylint = "*"

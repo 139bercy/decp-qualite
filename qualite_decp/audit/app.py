@@ -6,6 +6,7 @@ from datetime import datetime
 
 import jsonschema
 import pandas
+from tqdm import tqdm
 
 from qualite_decp import download
 from qualite_decp import conf
@@ -40,7 +41,9 @@ def audit_against_schema(data: dict, schema: dict):
         raise Exception(
             "Impossible de trouver la valeur #/definitions/marche dans properties.marches.items.anyOf"
         )
-    for root_error in validator.iter_errors(data):
+    for root_error in tqdm(
+        validator.iter_errors(data), desc="Analyse de conformité au schéma"
+    ):
         instance_uid = root_error.instance.get("uid")
         instance_suberrors = []
         if root_error.context is None or len(root_error.context) == 0:
