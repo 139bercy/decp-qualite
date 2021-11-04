@@ -43,7 +43,7 @@ def sidebar(available_sources: list, available_dates: list):
     return selected_source, current_date, old_date
 
 
-def no_date_page():
+def no_data_page():
     """Construit la partie principale de la page si aucune donnée n'est disponible"""
     title()
     st.error("Aucune donnée de résultat d'audit de qualité n'est disponible.")
