@@ -302,8 +302,10 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
             source_data, record_path="marches", index_column="uid"
         )
         lignes_dupliquees = count_duplicated_lines(dataframe)
-        jours_depuis_derniere_publication = get_days_since_last_publishing(dataframe)
-        jours_depuis_derniere_publication = min(jours_depuis_derniere_publication, 100)
+        jours_depuis_derniere_publication = (
+            get_days_since_last_publishing(dataframe) / 100.0
+        )
+        jours_depuis_derniere_publication = min(jours_depuis_derniere_publication, 1.0)
         valeurs_extremes = count_extreme_values(dataframe)
 
         # Analyse ligne par ligne
@@ -312,18 +314,27 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
             # Confrontation au schéma - Formats, valeurs
             marche_uid = marche["uid"]
             marche_schema_audit_results = schema_audit_results.get(marche_uid)
+            marche_has_formats_non_valides = 0
+            marche_has_valeurs_non_valides = 0
+            marche_has_donnees_manquantes = 0
+            marche_has_valeurs_non_renseignees = 0
             if marche_schema_audit_results is not None:
                 failed_validators = marche_schema_audit_results["failed_validators"]
                 for v in failed_validators:
                     if v == "minLength" or v == "maxLength" or v == "pattern":
-                        formats_non_valides += 1
+                        marche_has_formats_non_valides = 1
                     elif v == "enum" or v == "minimum" or v == "maximum":
-                        valeurs_non_valides += 1
+                        marche_has_valeurs_non_valides = 1
                     elif v == "required":
-                        donnees_manquantes += 1
-                        valeurs_non_renseignees += 1
+                        marche_has_donnees_manquantes = 1
+                        marche_has_valeurs_non_renseignees = 1
                     else:
                         logging.warning("Validateur non géré : %s", v)
+
+            formats_non_valides += marche_has_formats_non_valides
+            valeurs_non_valides += marche_has_valeurs_non_valides
+            donnees_manquantes += marche_has_donnees_manquantes
+            valeurs_non_renseignees += marche_has_valeurs_non_renseignees
 
             # Cohérence temporelle
             if (

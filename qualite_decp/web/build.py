@@ -187,7 +187,7 @@ def detailed_validite_container(parent_element, validite: measures.Validite):
     validite_container.markdown("**Validité**")
     validite_container.info(
         f"""
-        **{validite.jours_depuis_derniere_publication}{"+" if validite.jours_depuis_derniere_publication==100 else ""}** jours depuis la dernière publication
+        **{int(validite.jours_depuis_derniere_publication*100)}{"+" if validite.jours_depuis_derniere_publication==1.0 else ""}** jours depuis la dernière publication
         """
     )
     validite_container.info(
