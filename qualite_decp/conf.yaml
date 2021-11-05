@@ -16,7 +16,10 @@ audit:
     - 'marches-publics.info'
   chemin_resultats: data/audit-1000lignes.json
   nom_artifact_resultats: audit-1000lignes.json
-  bornes_montant_aberrant:
+  bornes_montant_aberrant_marche:
+    borne_inf: 200
+    borne_sup: 999999999
+  bornes_valeur_aberrante_concession:
     borne_inf: 200
     borne_sup: 999999999
   delai_publication: 62

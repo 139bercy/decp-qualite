@@ -164,9 +164,25 @@ def is_market_amount_abnormal(amount: int):
         bool: True si le montant est anormal, False sinon.
     """
     return not (
-        conf.audit.bornes_montant_aberrant.borne_inf
+        conf.audit.bornes_montant_aberrant_marche.borne_inf
         < amount
-        < conf.audit.bornes_montant_aberrant.borne_sup
+        < conf.audit.bornes_montant_aberrant_marche.borne_sup
+    )
+
+
+def is_contract_value_abnormal(value: int):
+    """Vérifie si la valeur de la concession est anormale.
+
+    Args:
+        amount (int): Valeur du contrat en euros
+
+    Returns:
+        bool: True si la valeur est anormale, False sinon.
+    """
+    return not (
+        conf.audit.bornes_valeur_aberrante_concession.borne_inf
+        < value
+        < conf.audit.bornes_valeur_aberrante_concession.borne_sup
     )
 
 
@@ -280,7 +296,6 @@ def count_extreme_values(dataframe: pandas.DataFrame):
 
 def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     """Audite la donnée consolidée pour une source.
-    TODO : Adapter les mesures aux colonnes des contrats de concessions.
 
     Args:
         source_name (str): Nom de la source
@@ -342,34 +357,30 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
             # Confrontation au schéma - Formats, valeurs
             marche_uid = marche["uid"]
             marche_schema_audit_results = schema_audit_results.get(marche_uid)
-            marche_has_formats_non_valides = 0
-            marche_has_valeurs_non_valides = 0
-            marche_has_donnees_manquantes = 0
-            marche_has_valeurs_non_renseignees = 0
+            marche_has_formats_non_valides = False
+            marche_has_valeurs_non_valides = False
+            marche_has_donnees_manquantes = False
+            marche_has_valeurs_non_renseignees = False
             if marche_schema_audit_results is not None:
                 failed_validators = marche_schema_audit_results["failed_validators"]
                 for v in failed_validators:
-                    if (
-                        v == "minLength"
-                        or v == "maxLength"
-                        or v == "pattern"
-                        or v == "type"
-                    ):
-                        marche_has_formats_non_valides = 1
-                    elif v == "enum" or v == "minimum" or v == "maximum":
-                        marche_has_valeurs_non_valides = 1
-                    elif v == "required":
-                        marche_has_donnees_manquantes = 1
-                        marche_has_valeurs_non_renseignees = 1
+                    if v in ["minLength", "maxLength", "pattern", "type"]:
+                        marche_has_formats_non_valides = True
+                    elif v in ["enum", "minimum", "maximum"]:
+                        marche_has_valeurs_non_valides = True
+                    elif v in ["required"]:
+                        marche_has_donnees_manquantes = True
+                        marche_has_valeurs_non_renseignees = True
                     else:
                         logging.warning("Validateur non géré : %s", v)
 
-            formats_non_valides += marche_has_formats_non_valides
-            valeurs_non_valides += marche_has_valeurs_non_valides
-            donnees_manquantes += marche_has_donnees_manquantes
-            valeurs_non_renseignees += marche_has_valeurs_non_renseignees
+            formats_non_valides += int(marche_has_formats_non_valides)
+            valeurs_non_valides += int(marche_has_valeurs_non_valides)
+            donnees_manquantes += int(marche_has_donnees_manquantes)
+            valeurs_non_renseignees += int(marche_has_valeurs_non_renseignees)
 
             # Cohérence temporelle
+            ## Marché
             if (
                 "dateNotification" in marche.keys()
                 and "datePublicationDonnees" in marche.keys()
@@ -378,10 +389,22 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                     marche["dateNotification"], marche["datePublicationDonnees"]
                 ):
                     incoherences_temporelles += 1
+            ## Concession
+            elif (
+                "dateNotification" in marche.keys()
+                and "datePublicationDonnees" in marche.keys()
+            ):
+                if is_after(marche["dateSignature"], marche["datePublicationDonnees"]):
+                    incoherences_temporelles += 1
 
             # Valeurs aberrantes
+            ## Marché
             if "montant" in marche.keys():
                 if is_market_amount_abnormal(marche["montant"]):
+                    valeurs_aberrantes += 1
+            ## Concession
+            elif "valeurGlobale" in marche.keys():
+                if is_contract_value_abnormal(marche["valeurGlobale"]):
                     valeurs_aberrantes += 1
 
             # Incohérences montant/durée

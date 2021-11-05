@@ -228,12 +228,12 @@ def detailed_conformite_container(parent_element, conformite: measures.Conformit
     conformite_container.markdown("**Conformité**")
     conformite_container.info(
         f"""
-        **{to_percentage(conformite.caracteres_mal_encodes)}** caractères mal encodés ou illisibles
+        **{to_percentage(conformite.caracteres_mal_encodes)}** caractères mal encodés
         """
     )
     conformite_container.info(
         f"""
-        **{to_percentage(conformite.formats_non_valides)}** formats non respectés
+        **{to_percentage(conformite.formats_non_valides)}** formats ou types non respectés
         """
     )
     conformite_container.info(
@@ -248,7 +248,7 @@ def detailed_exactitude_container(parent_element, exactitude: measures.Exactitud
     exactitude_container.markdown("**Exactitude**")
     exactitude_container.info(
         f"""
-        **{to_percentage(exactitude.valeurs_aberrantes)}** valeurs aberrantes
+        **{to_percentage(exactitude.valeurs_aberrantes)}** valeurs/montants aberrants
         """
     )
     exactitude_container.info(
@@ -263,7 +263,7 @@ def detailed_coherence_container(parent_element, coherence: measures.Coherence):
     coherence_container.markdown("**Cohérence**")
     coherence_container.info(
         f"""
-        **{to_percentage(coherence.incoherences_temporelles)}** incohérences temporelles entre notification et publication
+        **{to_percentage(coherence.incoherences_temporelles)}** incohérences temporelles entre notification/signature et publication
         """
     )
     coherence_container.info(
