@@ -1,7 +1,7 @@
 ## **decp-qualite** : Evaluation de la qualité des Données Essentielles de la Commande Publique (DECP).
 
-![Actions badge](https://github.com/139bercy/decp-qualite/actions/workflows/ci.yaml/badge.svg)
-![Actions badge](https://github.com/139bercy/decp-qualite/actions/workflows/cd.yaml/badge.svg)
+![Actions badge](https://github.com/139bercy/decp-qualite/actions/workflows/tests.yaml/badge.svg)
+![Actions badge](https://github.com/139bercy/decp-qualite/actions/workflows/run.yaml/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Ce projet permet d'auditer la qualité des données essentielles de la commande publique consolidées sur data.gouv.fr. Les résultats sont affichés dans une application Web interactive.
