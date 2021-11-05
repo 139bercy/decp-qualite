@@ -170,15 +170,16 @@ def is_market_amount_abnormal(amount: int):
     )
 
 
-def is_contract_value_abnormal(value: int):
+def is_contract_value_abnormal(value: float):
     """Vérifie si la valeur de la concession est anormale.
 
     Args:
-        amount (int): Valeur du contrat en euros
+        amount (float): Valeur du contrat en euros
 
     Returns:
         bool: True si la valeur est anormale, False sinon.
     """
+    value = float(value)
     return not (
         conf.audit.bornes_valeur_aberrante_concession.borne_inf
         < value
