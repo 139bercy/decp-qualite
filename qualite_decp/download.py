@@ -7,6 +7,8 @@ import json
 import requests
 import pandas
 
+pandas.set_option("display.max_columns", 500)
+
 from qualite_decp import conf
 
 

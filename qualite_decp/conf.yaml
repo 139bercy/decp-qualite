@@ -32,6 +32,7 @@ audit:
       - titulaires
       - modifications
       - donneesExecution
+      - concessionnaires
 
 web:
   titre_page : Qualité des Données Essentielles de la Commande Publique (DECP)

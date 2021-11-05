@@ -33,24 +33,48 @@ def audit_against_schema(data: dict, schema: dict):
     # Choix de Draft4Validator car "$schema": "http://json-schema.org/draft-04/schema#"
     validator = jsonschema.Draft4Validator(schema)
     errors = dict()
-    keep_index_any_of = None
+
+    # Trouver l'index du champ "anyOf" correspondant à chaque type
+    index_any_of_marche = None
+    index_any_of_concession = None
     for index, any_of in enumerate(schema["properties"]["marches"]["items"]["anyOf"]):
         if any_of["$ref"] == "#/definitions/marche":
-            keep_index_any_of = index
-    if keep_index_any_of is None:
+            index_any_of_marche = index
+        elif any_of["$ref"] == "#/definitions/contrat-concession":
+            index_any_of_concession = index
+        else:
+            logging.warning(f"Valeur $ref non gérée : {any_of['$ref']}")
+    if index_any_of_marche is None:
         raise Exception(
             "Impossible de trouver la valeur #/definitions/marche dans properties.marches.items.anyOf"
         )
+    elif index_any_of_concession is None:
+        raise Exception(
+            "Impossible de trouver la valeur #/definitions/contrat-concession dans properties.marches.items.anyOf"
+        )
+
+    # Parcourir les instances en défaut
     for root_error in tqdm(
         validator.iter_errors(data), desc="Analyse de conformité au schéma"
     ):
         instance_uid = root_error.instance.get("uid")
+        instance_type = root_error.instance.get("_type")
+        keep_index_any_of = [0, 1, 2]
+        if "marché" in instance_type.lower():
+            keep_index_any_of = [index_any_of_marche]
+        elif "concession" in instance_type.lower():
+            keep_index_any_of = [index_any_of_concession]
+        else:
+            logging.warning(
+                f"Type {instance_type} inconnu, impossible de déterminer le schéma précis pour {instance_uid}"
+            )
         instance_suberrors = []
         if root_error.context is None or len(root_error.context) == 0:
             logging.warning("Des défauts de qualité inattendus ont pu être omis")
         else:
+            # Parcourir les défauts de l'instance
             for error in root_error.context:
-                if error.schema_path[0] == keep_index_any_of:
+                if error.schema_path[0] in keep_index_any_of:
                     if len(error.context) > 0:
                         logging.warning(
                             "Des défauts de qualité inattendus ont pu être omis"
@@ -256,6 +280,7 @@ def count_extreme_values(dataframe: pandas.DataFrame):
 
 def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     """Audite la donnée consolidée pour une source.
+    TODO : Adapter les mesures aux colonnes des contrats de concessions.
 
     Args:
         source_name (str): Nom de la source
@@ -324,7 +349,12 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
             if marche_schema_audit_results is not None:
                 failed_validators = marche_schema_audit_results["failed_validators"]
                 for v in failed_validators:
-                    if v == "minLength" or v == "maxLength" or v == "pattern":
+                    if (
+                        v == "minLength"
+                        or v == "maxLength"
+                        or v == "pattern"
+                        or v == "type"
+                    ):
                         marche_has_formats_non_valides = 1
                     elif v == "enum" or v == "minimum" or v == "maximum":
                         marche_has_valeurs_non_valides = 1
@@ -436,11 +466,12 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     return new_source_results
 
 
-def run(rows: int = None):
+def run(rows: int = None, keep_type_marche_only=False):
     """Audite la donnée consolidée et stocke les résultats.
 
     Args:
         rows (int, optional): Nombre de lignes desquelles auditer la qualité. Defaults to None.
+        keep_type_marche_only (bool, optional): Garder uniquement les enregirstrements où le _type est marché. Defaults to False.
     """
     data = download.open_json(conf.download.chemin_donnes_consolidees)
     schema = download.open_json(conf.download.chemin_schema_donnees)
@@ -451,14 +482,15 @@ def run(rows: int = None):
     num_total = len(data["marches"])
     availables_types = set([m.get("_type") for m in data["marches"]])
     logging.debug("Valeurs de la colonne _type : %s", availables_types)
-    logging.debug("Filtrage de la colonne _type sur la valeur 'marché'")
-    data["marches"] = [
-        m for m in data["marches"] if m.get("_type").lower() == "marché".lower()
-    ]
-    num_filtered = len(data["marches"])
-    logging.debug(
-        "Passage de %d à %d entrées suite au filtrage", num_total, num_filtered
-    )
+    if keep_type_marche_only:
+        logging.debug("Filtrage de la colonne _type sur la valeur 'marché'")
+        data["marches"] = [
+            m for m in data["marches"] if m.get("_type").lower() == "marché".lower()
+        ]
+        num_filtered = len(data["marches"])
+        logging.debug(
+            "Passage de %d à %d entrées suite au filtrage", num_total, num_filtered
+        )
     # Audit par source
     available_sources = set([m.get("source") for m in data["marches"]])
     results = audit_results.AuditResults()
