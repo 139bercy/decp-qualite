@@ -6,6 +6,7 @@ class AuditResultsOneSource:
     def __init__(
         self,
         source: str,
+        num_rows: int = None,
         general: measures.General = None,
         validite: measures.Validite = None,
         completude: measures.Completude = None,
@@ -30,6 +31,7 @@ class AuditResultsOneSource:
             exactitude = measures.Exactitude()
 
         self.source = source
+        self.num_rows = num_rows
         self.general = general
         self.validite = validite
         self.completude = completude
@@ -62,6 +64,7 @@ class AuditResultsOneSource:
     def to_dict(self):
         return {
             "source": self.source,
+            "num_rows": self.num_rows,
             "general": self.general.to_dict(),
             "validite": self.validite.to_dict(),
             "completude": self.completude.to_dict(),
@@ -82,6 +85,7 @@ class AuditResultsOneSource:
             AuditResultsOneSource: Instance créée
         """
         source = d["source"]
+        num_rows = d.get("num_rows")
         general = measures.General.from_dict(d["general"])
         validite = measures.Validite.from_dict(d["validite"])
         completude = measures.Completude.from_dict(d["completude"])
@@ -91,6 +95,7 @@ class AuditResultsOneSource:
         exactitude = measures.Exactitude.from_dict(d["exactitude"])
         return cls(
             source,
+            num_rows,
             general,
             validite,
             completude,

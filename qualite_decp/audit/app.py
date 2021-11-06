@@ -478,6 +478,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
 
     new_source_results = audit_results_one_source.AuditResultsOneSource(
         source=source_name,
+        num_rows=num_lines,
         singularite=singularite,
         conformite=conformite,
         completude=completude,

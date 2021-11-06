@@ -100,6 +100,9 @@ def global_container(
     current_results: audit_results_one_source.AuditResultsOneSource,
     old_results: audit_results_one_source.AuditResultsOneSource,
 ):
+    st.markdown(
+        f"*Source sélectionnée : {current_results.source} | {current_results.num_rows} lignes*"
+    )
     """Construit la section contenant les indicateurs de qualité globale"""
     global_container = st.container()
     global_container.subheader("Synthèse")
