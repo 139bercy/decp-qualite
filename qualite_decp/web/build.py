@@ -1,6 +1,7 @@
 """ Module contenant les fonctions pour construire les différents éléments de la page Web streamlit.
 """
 
+import base64
 
 from audit import audit_results_one_source
 import streamlit as st
@@ -41,6 +42,41 @@ def sidebar(available_sources: list, available_dates: list):
         old_date = st.selectbox("Date à comparer", available_dates, index=0)
     st.sidebar.markdown(conf.web.texte_bas_barre_laterale)
     return selected_source, current_date, old_date
+
+
+def get_zip_download_link(zip_path, client_file_name="file.zip"):
+    """Generates a link allowing a ZIP file to be downloaded"""
+    with open(zip_path, "rb") as f:
+        bytes = f.read()
+        b64 = base64.b64encode(bytes).decode()
+        href = f"<a href=\"data:file/zip;base64,{b64}\" download='{client_file_name}'> {client_file_name} </a>"
+    return href
+
+
+def download_button(path_results: str, path_details: str = None, parent_container=st):
+    """Construit un bouton de téléchargement pour les données.
+
+    Args:
+        path_results (str): Chemin vers le fichier ZIP contenant les résultats d'audit
+        path_details (str, optional): Chemin vers le fichier ZIP contenant le détail par marché. Defaults to None.
+        parent_container ([type], optional): Container dans lequel construire le bouton. Defaults to st.
+    """
+    if parent_container.button("Télécharger les données courantes"):
+        link_results = get_zip_download_link(
+            path_results, client_file_name="synthèse.zip"
+        )
+        if path_details is not None:
+            link_details = get_zip_download_link(
+                path_details, client_file_name="détails.zip"
+            )
+            parent_container.markdown(
+                f"Synthèse par source : {link_results} <br> Détails par marché : {link_details}",
+                unsafe_allow_html=True,
+            )
+        else:
+            parent_container.markdown(
+                f"Synthèse par source : {link_results}", unsafe_allow_html=True
+            )
 
 
 def no_data_page():
@@ -101,7 +137,7 @@ def global_container(
     old_results: audit_results_one_source.AuditResultsOneSource,
 ):
     st.markdown(
-        f"*Source sélectionnée : {current_results.source} | {current_results.num_rows} lignes*"
+        f"*Source sélectionnée : {current_results.source} | {current_results.num_rows} marchés*"
     )
     """Construit la section contenant les indicateurs de qualité globale"""
     global_container = st.container()

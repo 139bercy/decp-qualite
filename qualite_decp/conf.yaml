@@ -16,7 +16,8 @@ audit:
     - 'marches-publics.info'
   chemin_resultats: data/audit-10000lignes.json #doit correspondre à run.yaml
   nom_artifact_resultats: audit-10000lignes.json #doit correspondre à run.yaml
-  chemin_details: data/details-10000lignes.json
+  chemin_details: data/details-10000lignes.json #doit correspondre à run.yaml
+  nom_artifact_details: details-10000lignes.json #doit correspondre à run.yaml
   bornes_montant_aberrant_marche:
     borne_inf: 200
     borne_sup: 999999999

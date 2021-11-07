@@ -55,22 +55,21 @@ def get_github_auth():
     return (username, token)
 
 
-def list_artifacts():
+def list_artifacts(artifact_name: str):
     """Liste les artifacts disponible (1 par date).
 
     Returns:
         dict: Dictionnaire des artifacts disponible (date:url)
     """
     artifacts = get_artifacts()
-    nom_artifact = conf.audit.nom_artifact_resultats
     num_artifacts = artifacts.get("total_count")
     logging.debug(f"{num_artifacts} artifacts disponibles sur le projet")
     artifacts = [
         a
         for a in artifacts.get("artifacts")
-        if a.get("name") == nom_artifact and a.get("expired") == False
+        if a.get("name") == artifact_name and a.get("expired") == False
     ]
-    logging.debug(f"{len(artifacts)} artifacts de résultats d'audit")
+    logging.debug(f"{len(artifacts)} artifacts ayant pour nom {artifact_name}")
     results = dict()
     for artifact in artifacts:
         artifact_date = artifact.get("created_at")
@@ -83,7 +82,21 @@ def list_artifacts():
 
 
 @st.cache
-def load_artifact_archive_from_url(archive_url: str):
+def download_artifact_archive_from_url(archive_url: str, path: str):
+    """Télécharge un artifact archivé sous forme de dictionnaire depuis une URL.
+
+    Args:
+        archive_url (str): URL vers un artifact de type JSON archivé (ZIP)
+        path (str): Chemin vers le fichier téléchargé
+    """
+    auth = get_github_auth()
+    download.download_data_from_url_to_file(archive_url, path, stream=True, auth=auth)
+
+
+@st.cache
+def load_artifact_archive_from_url(
+    archive_url: str, buffer_path: str = "./data/artifact.zip"
+):
     """Charge un artifact archivé sous forme de dictionnaire depuis une URL.
 
     Args:
@@ -92,11 +105,8 @@ def load_artifact_archive_from_url(archive_url: str):
     Returns:
         dict: Fichier chargé
     """
-    auth = get_github_auth()
-    download.download_data_from_url_to_file(
-        archive_url, "./data/artifact.zip", stream=True, auth=auth
-    )
-    with zipfile.ZipFile("./data/artifact.zip", "r") as z:
+    download_artifact_archive_from_url(archive_url, buffer_path)
+    with zipfile.ZipFile(buffer_path, "r") as z:
         for filename in z.namelist():
             with z.open(filename) as f:
                 data = f.read()
@@ -105,7 +115,7 @@ def load_artifact_archive_from_url(archive_url: str):
 
 
 def get_audit_results(
-    date: datetime.date, source: str
+    date: datetime.date, source: str, buffer_path: str = None
 ) -> audit_results_one_source.AuditResultsOneSource:
     """Récupère le résultat de l'audit de qualité pour la source et la date selectionnées.
 
@@ -116,9 +126,9 @@ def get_audit_results(
     Returns:
         audit_results_one_source.AuditResultsOneSource: Résultats d'audit
     """
-    artifacts_dict = list_artifacts()
+    artifacts_dict = list_artifacts(conf.audit.nom_artifact_resultats)
     url = artifacts_dict[date]
-    artifact = load_artifact_archive_from_url(url)
+    artifact = load_artifact_archive_from_url(url, buffer_path=buffer_path)
     results = audit_results.AuditResults.from_list(artifact)
     result = results.extract_results_for_source(source)
     return result
