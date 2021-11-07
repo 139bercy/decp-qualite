@@ -239,7 +239,7 @@ def count_duplicated_lines(dataframe: pandas.DataFrame):
     )
     duplicates = dataframe.duplicated(keep=False, subset=include_columns)
     num_duplicates = duplicates.sum()
-    duplicates_uids = duplicates[duplicates == True].index.to_list()
+    duplicates_uids = duplicates[duplicates is True].index.to_list()
     logging.debug(
         "%d lignes dupliquées trouvées, UIDs : %s", num_duplicates, duplicates_uids
     )

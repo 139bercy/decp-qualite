@@ -1,14 +1,8 @@
-import logging
-import datetime
-
 import streamlit as st
 
 from qualite_decp import conf
-from qualite_decp import download
 from qualite_decp.web import build
 from qualite_decp.web import artifacts
-from qualite_decp.audit import audit_results
-from qualite_decp.audit import audit_results_one_source
 
 
 def run():
@@ -37,7 +31,7 @@ def run():
         # Récupération des détails par marché de l'audit et construction du bouton de téléchargement
         details_url = details_artifacts_dict.get(selected_current_date)
         if details_url is not None:
-            current_details = artifacts.download_artifact_archive_from_url(
+            artifacts.download_artifact_archive_from_url(
                 details_url, path="./data/details.zip"
             )
             path_details = "./data/details.zip"

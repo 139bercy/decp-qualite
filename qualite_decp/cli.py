@@ -32,19 +32,19 @@ def get_parser():
     """
     parser = argparse.ArgumentParser()
     subparser = parser.add_subparsers(dest="command")
-    download = subparser.add_parser(
+    download_command = subparser.add_parser(
         "download", help="télécharger la donnée consolidée (.json depuis data.gouv.fr)"
     )
-    audit = subparser.add_parser(
+    audit_command = subparser.add_parser(
         "audit", help="auditer la qualité de données et stocker les résultats"
     )
-    audit.add_argument(
+    audit_command.add_argument(
         "--rows",
         required=False,
         help="nombre de lignes desquelles auditer la qualité",
         type=int,
     )
-    web = subparser.add_parser(
+    web_command = subparser.add_parser(
         "web", help="lancer l'application web de présentation des résultats"
     )
     return parser

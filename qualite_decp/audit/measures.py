@@ -38,7 +38,7 @@ class Measure(ABC):
         pass
 
     @abstractmethod
-    def from_dict(d):
+    def from_dict(cls, d):
         pass
 
 
