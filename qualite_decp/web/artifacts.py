@@ -25,12 +25,11 @@ def get_artifacts(today_date: datetime.date = datetime.now().date()):
     """
     github_repo = conf.web.projet_github
     url = f"https://api.github.com/repos/{github_repo}/actions/artifacts"
-    artifacts = download_json_from_url(url)
+    artifacts = load_json_from_url(url)
     return artifacts
 
 
-@st.cache
-def download_json_from_url(url: str):
+def load_json_from_url(url: str):
     """Charge un fichier JSON en mémoire depuis une URL
 
     Args:

@@ -48,6 +48,11 @@ def download_data_from_url_to_file(url: str, path: str, stream: bool = True, aut
             file_writer.write(response.content)
 
 
+def get_safe_filename(string: str, separator="_"):
+    filename = "".join([c if c.isalnum() else separator for c in string])
+    return filename
+
+
 def open_json(path: str):
     """Charge un fichier JSON sous forme de dictionnaire
 

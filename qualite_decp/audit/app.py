@@ -312,6 +312,8 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     non_unique_uids = [uid for uid in uids if len([u for u in uids if u == uid]) > 1]
     num_non_unique_uids = len(non_unique_uids)
     logging.info("%d lignes pour la source %s", num_lines, source_name)
+    source_results_details = list()
+
     if len(source_data["marches"]) == 0:
         identifiants_non_uniques = 0.0
         formats_non_valides = 0.0
@@ -347,9 +349,8 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         )
         lignes_dupliquees = count_duplicated_lines(dataframe)
         jours_depuis_derniere_publication = (
-            get_days_since_last_publishing(dataframe) / 100.0
+            min(get_days_since_last_publishing(dataframe), 100) / 100.0
         )
-        jours_depuis_derniere_publication = min(jours_depuis_derniere_publication, 1.0)
         valeurs_extremes = count_extreme_values(dataframe)
 
         # Analyse ligne par ligne
@@ -380,6 +381,12 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
             donnees_manquantes += int(marche_has_donnees_manquantes)
             valeurs_non_renseignees += int(marche_has_valeurs_non_renseignees)
 
+            marche_has_incoherences_temporelles = False
+            marche_has_valeurs_aberrantes = False
+            marche_has_incoherences_montant_duree = False
+            marche_has_caracteres_mal_encodes = False
+            marche_has_depassements_delai_entre_notification_et_publication = False
+
             # Cohérence temporelle
             ## Marché
             if (
@@ -389,36 +396,36 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                 if is_after(
                     marche["dateNotification"], marche["datePublicationDonnees"]
                 ):
-                    incoherences_temporelles += 1
+                    marche_has_incoherences_temporelles = True
             ## Concession
             elif (
                 "dateNotification" in marche.keys()
                 and "datePublicationDonnees" in marche.keys()
             ):
                 if is_after(marche["dateSignature"], marche["datePublicationDonnees"]):
-                    incoherences_temporelles += 1
+                    marche_has_incoherences_temporelles = True
 
             # Valeurs aberrantes
             ## Marché
             if "montant" in marche.keys():
                 if is_market_amount_abnormal(marche["montant"]):
-                    valeurs_aberrantes += 1
+                    marche_has_valeurs_aberrantes = True
             ## Concession
             elif "valeurGlobale" in marche.keys():
                 if is_contract_value_abnormal(marche["valeurGlobale"]):
-                    valeurs_aberrantes += 1
+                    marche_has_valeurs_aberrantes = True
 
             # Incohérences montant/durée
             if "montant" in marche.keys() and "dureeMois" in marche.keys():
                 if are_market_amount_and_duration_inconsistent(
                     marche["montant"], marche["dureeMois"]
                 ):
-                    incoherences_montant_duree += 1
+                    marche_has_incoherences_montant_duree = True
 
             # Caractères non supportés (utf8 non respecté)
             if "objet" in marche.keys():
                 if has_unsupported_character(marche["objet"]):
-                    caracteres_mal_encodes += 1
+                    marche_has_caracteres_mal_encodes = True
 
             # Dépassement du délai reglemntaire entre notification et publication
             if (
@@ -428,7 +435,37 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                 if is_market_publishing_delay_overdue(
                     marche["dateNotification"], marche["datePublicationDonnees"]
                 ):
-                    depassements_delai_entre_notification_et_publication += 1
+                    marche_has_depassements_delai_entre_notification_et_publication = (
+                        True
+                    )
+
+            incoherences_temporelles += int(marche_has_incoherences_temporelles)
+            valeurs_aberrantes += int(marche_has_valeurs_aberrantes)
+            incoherences_montant_duree += int(marche_has_incoherences_montant_duree)
+            caracteres_mal_encodes += int(marche_has_caracteres_mal_encodes)
+            depassements_delai_entre_notification_et_publication += int(
+                marche_has_depassements_delai_entre_notification_et_publication
+            )
+
+            source_results_details.append(
+                {
+                    "uid": marche_uid,
+                    "formats_non_valides": marche_has_formats_non_valides,
+                    "valeurs_non_valides": marche_has_valeurs_non_valides,
+                    "donnees_manquantes": marche_has_donnees_manquantes,
+                    "valeurs_non_renseignees": marche_has_valeurs_non_renseignees,
+                    "incoherences_temporelles": marche_has_incoherences_temporelles,
+                    "valeurs_aberrantes": marche_has_valeurs_aberrantes,
+                    "incoherences_montant_duree": marche_has_incoherences_montant_duree,
+                    "caracteres_mal_encodes": marche_has_caracteres_mal_encodes,
+                    "depassements_delai_entre_notification_et_publication": marche_has_depassements_delai_entre_notification_et_publication
+                    # Les autres mesures sont calculées à l'échelle du jeu de données
+                    # identifiants_non_uniques
+                    # valeurs_extremes
+                    # jours_depuis_derniere_publication
+                    # lignes_dupliquees
+                }
+            )
 
         # Conversion vers un pourcentage des lignes concernées
         identifiants_non_uniques = divide_and_round(identifiants_non_uniques, num_lines)
@@ -476,7 +513,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         valeurs_aberrantes=valeurs_aberrantes, valeurs_extremes=valeurs_extremes
     )
 
-    new_source_results = audit_results_one_source.AuditResultsOneSource(
+    source_results = audit_results_one_source.AuditResultsOneSource(
         source=source_name,
         num_rows=num_lines,
         singularite=singularite,
@@ -487,8 +524,8 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         exactitude=exactitude,
     )
 
-    new_source_results.compute_general()
-    return new_source_results
+    source_results.compute_general()
+    return source_results, source_results_details
 
 
 def run(rows: int = None, keep_type_marche_only=False):
@@ -519,6 +556,7 @@ def run(rows: int = None, keep_type_marche_only=False):
     # Audit par source
     available_sources = set([m.get("source") for m in data["marches"]])
     results = audit_results.AuditResults()
+    details = list()
     for source in conf.audit.sources:
         logging.info("Audit de la qualité pour la source %s...", source)
         source_data = {
@@ -526,8 +564,12 @@ def run(rows: int = None, keep_type_marche_only=False):
                 m for m in data["marches"] if m.get("source").lower() == source.lower()
             ]
         }
-        new_source_results = audit_source_quality(source, source_data, schema)
-        results.add_results(new_source_results)
+        source_results, source_details = audit_source_quality(
+            source, source_data, schema
+        )
+        results.add_results(source_results)
+        details.append({"source": source, "details": source_details})
 
     results.compute_ranks()
     results.to_json(conf.audit.chemin_resultats)
+    download.save_json(details, conf.audit.chemin_details)
