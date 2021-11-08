@@ -148,7 +148,7 @@ def global_container(
     old_results: audit_results_one_source.AuditResultsOneSource,
 ):
     st.markdown(
-        f"*Source sélectionnée : {current_results.source} | {current_results.num_rows} marchés*"
+        f"*Source sélectionnée : **{current_results.source}** | {current_results.num_rows} marchés*"
     )
     """Construit la section contenant les indicateurs de qualité globale"""
     global_container = st.container()
