@@ -255,11 +255,12 @@ def detailed_completude_container(parent_element, completude: measures.Completud
         **{to_percentage(completude.donnees_manquantes)}** données manquantes
         """
     )
-    completude_container.info(
-        f"""
-        **{to_percentage(completude.valeurs_non_renseignees)}** valeurs non renseignées
-        """
-    )
+    # Données manquantes et valeurs non renseignées sont calculées identiquement
+    # completude_container.info(
+    #     f"""
+    #     **{to_percentage(completude.valeurs_non_renseignees)}** valeurs non renseignées
+    #     """
+    # )
 
 
 def detailed_conformite_container(parent_element, conformite: measures.Conformite):
