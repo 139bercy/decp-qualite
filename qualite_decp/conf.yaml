@@ -38,6 +38,9 @@ audit:
       - modifications
       - donneesExecution
       - concessionnaires
+  caractere_mal_encode:
+    colonnes_incluses : 
+      - objet
 
 web:
   titre_page : Qualité des Données Essentielles de la Commande Publique (DECP)

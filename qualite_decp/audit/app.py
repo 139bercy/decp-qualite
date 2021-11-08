@@ -239,7 +239,7 @@ def count_duplicated_lines(dataframe: pandas.DataFrame):
     )
     duplicates = dataframe.duplicated(keep=False, subset=include_columns)
     num_duplicates = duplicates.sum()
-    duplicates_uids = duplicates[duplicates is True].index.to_list()
+    duplicates_uids = duplicates[duplicates == True].index.to_list()
     logging.debug(
         "%d lignes dupliquées trouvées, UIDs : %s", num_duplicates, duplicates_uids
     )
@@ -423,9 +423,10 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                     marche_has_incoherences_montant_duree = True
 
             # Caractères non supportés (utf8 non respecté)
-            if "objet" in marche.keys():
-                if has_unsupported_character(marche["objet"]):
-                    marche_has_caracteres_mal_encodes = True
+            for column in conf.audit.caractere_mal_encode.colonnes_incluses:
+                if column in marche.keys():
+                    if has_unsupported_character(marche[column]):
+                        marche_has_caracteres_mal_encodes = True
 
             # Dépassement du délai reglemntaire entre notification et publication
             if (
