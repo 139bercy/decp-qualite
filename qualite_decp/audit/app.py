@@ -84,6 +84,7 @@ def audit_against_schema(data: dict, schema: dict):
                         "validator": error.validator,
                     }
                     instance_suberrors.append(error_details)
+                    print(error_details)
         failed_validators = list(
             set([suberror["validator"] for suberror in instance_suberrors])
         )
@@ -399,7 +400,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                     marche_has_incoherences_temporelles = True
             ## Concession
             elif (
-                "dateNotification" in marche.keys()
+                "dateSignature" in marche.keys()
                 and "datePublicationDonnees" in marche.keys()
             ):
                 if is_after(marche["dateSignature"], marche["datePublicationDonnees"]):
@@ -429,12 +430,24 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                         marche_has_caracteres_mal_encodes = True
 
             # Dépassement du délai reglemntaire entre notification et publication
+            ## Marché
             if (
                 "dateNotification" in marche.keys()
                 and "datePublicationDonnees" in marche.keys()
             ):
                 if is_market_publishing_delay_overdue(
                     marche["dateNotification"], marche["datePublicationDonnees"]
+                ):
+                    marche_has_depassements_delai_entre_notification_et_publication = (
+                        True
+                    )
+            ## Concession
+            elif (
+                "dateSignature" in marche.keys()
+                and "datePublicationDonnees" in marche.keys()
+            ):
+                if is_market_publishing_delay_overdue(
+                    marche["dateSignature"], marche["datePublicationDonnees"]
                 ):
                     marche_has_depassements_delai_entre_notification_et_publication = (
                         True
