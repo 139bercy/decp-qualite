@@ -44,9 +44,11 @@ audit:
 
 web:
   titre_page : Qualité des Données Essentielles de la Commande Publique (DECP)
-  texte_haut_barre_laterale: Cette application propose une analyse de la qualité des DECP.
-  texte_bas_barre_laterale: Consultez la documentation pour plus d'information.
+  texte_haut_barre_laterale: Cette application propose une analyse de la qualité des DECP. Les résultats affichés sont issus du fichier consolidé publié quotidiennement sur [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/).
+  texte_bas_barre_laterale: Le code source de cette application est disponible [sur GitHub](https://github.com/139bercy/decp-qualite/).
   titre: Qualité des Données Essentielles de la Commande Publique (DECP)
   projet_github: 139bercy/decp-qualite
   texte_synthese: Les valeurs affichées sont calculées sur une échelle de 0 (toutes les données présentent l'ensemble des défauts de qualité audités) à 100 (la qualité des données est parfaite) à partir des indicateurs sous-jacent détaillés plus bas.
   texte_details: Les valeurs exprimées en pourcentage (%) représentent la part de lignes concernées par la non-qualité.
+  page_documentation: Documentation
+  page_resultats: Résultats de l'analyse

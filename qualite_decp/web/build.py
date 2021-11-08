@@ -32,6 +32,9 @@ def sidebar(available_sources: list, available_dates: list):
         str, str, str: Source, date courante et date de comparaison sélectionnées
     """
     st.sidebar.markdown(conf.web.texte_haut_barre_laterale)
+    selected_page = st.sidebar.radio(
+        "Naviguer vers", [conf.web.page_resultats, conf.web.page_documentation]
+    )
     selected_source = st.sidebar.selectbox("Source à analyser", available_sources)
     sidebar_column_1, sidebar_column_2 = st.sidebar.columns(2)
     with sidebar_column_1:
@@ -41,7 +44,7 @@ def sidebar(available_sources: list, available_dates: list):
     with sidebar_column_2:
         old_date = st.selectbox("Date à comparer", available_dates, index=0)
     st.sidebar.markdown(conf.web.texte_bas_barre_laterale)
-    return selected_source, current_date, old_date
+    return selected_page, selected_source, current_date, old_date
 
 
 def get_zip_download_link(zip_path, client_file_name="file.zip"):
@@ -61,7 +64,7 @@ def download_button(path_results: str, path_details: str = None, parent_containe
         path_details (str, optional): Chemin vers le fichier ZIP contenant le détail par marché. Defaults to None.
         parent_container ([type], optional): Container dans lequel construire le bouton. Defaults to st.
     """
-    if parent_container.button("Télécharger les données courantes"):
+    if parent_container.button("Générer les liens de téléchargement"):
         link_results = get_zip_download_link(
             path_results, client_file_name="synthèse.zip"
         )
@@ -83,6 +86,14 @@ def no_data_page():
     """Construit la partie principale de la page si aucune donnée n'est disponible"""
     title()
     st.error("Aucune donnée de résultat d'audit de qualité n'est disponible.")
+
+
+def documentation_page():
+    """Construit la partie principale de la page de documentation"""
+    title()
+    with open("indicateurs.md", "r", encoding="utf-8") as file:
+        markdown = file.read()
+    st.markdown(markdown, unsafe_allow_html=True)
 
 
 def page(
