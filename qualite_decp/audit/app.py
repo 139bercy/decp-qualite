@@ -552,7 +552,7 @@ def run(rows: int = None, keep_type_marche_only=False):
     schema = download.open_json(conf.download.chemin_schema_donnees)
     # Choix d'un sous-ensemble des marchés, si requis
     if rows is not None:
-        data["marches"] = data["marches"][:rows]
+        data["marches"] = data["marches"][-rows:]
     # Filtrage sur le _type 'marché'
     num_total = len(data["marches"])
     availables_types = set([m.get("_type") for m in data["marches"]])
