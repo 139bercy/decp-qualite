@@ -1,7 +1,7 @@
 name: run
 on:
   schedule:
-    - cron:  '0 8 * * *' # tous les jours à 8h
+    - cron:  '0 6 * * *' # tous les jours à 6h
 jobs:
   download-data-and-audit-quality:
     runs-on: ubuntu-latest
