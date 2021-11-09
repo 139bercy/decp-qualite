@@ -84,7 +84,6 @@ def audit_against_schema(data: dict, schema: dict):
                         "validator": error.validator,
                     }
                     instance_suberrors.append(error_details)
-                    print(error_details)
         failed_validators = list(
             set([suberror["validator"] for suberror in instance_suberrors])
         )
