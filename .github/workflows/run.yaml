@@ -27,16 +27,16 @@ jobs:
         with: 
           name: audit-100000lignes.json
           path: ./data/audit-100000lignes.json
-          retention-days: 10
+          retention-days: 7
       - name: Upload audit details per line as artifact
         uses: actions/upload-artifact@v2
         with: 
           name: details-100000lignes.json
           path: ./data/details-100000lignes.json
-          retention-days: 10
+          retention-days: 7
       - name: Upload source data as artifact
         uses: actions/upload-artifact@v2
         with: 
           name: decp.json
           path: ./data/decp.json
-          retention-days: 10
+          retention-days: 7
