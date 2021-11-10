@@ -18,6 +18,7 @@ from qualite_decp.audit import measures
 
 ENABLE_MULTIPROCESSING = True
 NUM_MULTIPROCESSING_PROCESSES = 4
+MULTIPROCESSING_CHUNK_SIZE = 100
 
 
 def get_instance_errors(
@@ -162,7 +163,7 @@ def audit_against_schema(data: dict, schema: dict):
         )
         pool = Pool(processes=NUM_MULTIPROCESSING_PROCESSES)
         iter_errors_results = pool.map(
-            audit_one_market_x, data["marches"], chunksize=100
+            audit_one_market_x, data["marches"], chunksize=MULTIPROCESSING_CHUNK_SIZE
         )
         pool.close()
         pool.join()
