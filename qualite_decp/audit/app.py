@@ -6,7 +6,6 @@ from datetime import datetime
 
 import jsonschema
 import pandas
-from tqdm import tqdm
 
 from qualite_decp import download
 from qualite_decp import conf
@@ -54,9 +53,9 @@ def audit_against_schema(data: dict, schema: dict):
         )
 
     # Parcourir les instances en défaut
-    for root_error in tqdm(
-        validator.iter_errors(data), desc="Analyse de conformité au schéma"
-    ):
+    for counter, root_error in enumerate(validator.iter_errors(data)):
+        if counter % 10000 == 0:
+            logging.info(f"{counter} défauts de schéma traités")
         instance_uid = root_error.instance.get("uid")
         instance_type = root_error.instance.get("_type")
         keep_index_any_of = [0, 1, 2]
@@ -344,14 +343,25 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         valeurs_aberrantes = 0
         valeurs_extremes = 0
 
-        dataframe = download.json_dict_to_dataframe(
-            source_data, record_path="marches", index_column="uid"
-        )
-        lignes_dupliquees = count_duplicated_lines(dataframe)
-        jours_depuis_derniere_publication = (
-            min(get_days_since_last_publishing(dataframe), 100) / 100.0
-        )
-        valeurs_extremes = count_extreme_values(dataframe)
+        try:
+            dataframe = download.json_dict_to_dataframe(
+                source_data, record_path="marches", index_column="uid"
+            )
+            lignes_dupliquees = count_duplicated_lines(dataframe)
+        except Exception as e:
+            logging.error(f"Impossible de calculer les lignes dupliquées : {e}")
+        try:
+            jours_depuis_derniere_publication = (
+                min(get_days_since_last_publishing(dataframe), 100) / 100.0
+            )
+        except Exception as e:
+            logging.error(
+                f"Impossible de calculer les jours depuis dernière publication : {e}"
+            )
+        try:
+            valeurs_extremes = count_extreme_values(dataframe)
+        except Exception as e:
+            logging.error(f"Impossible de calculer les valeurs extrêmes : {e}")
 
         # Analyse ligne par ligne
         for marche in source_data["marches"]:
@@ -389,68 +399,97 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
 
             # Cohérence temporelle
             ## Marché
-            if (
-                "dateNotification" in marche.keys()
-                and "datePublicationDonnees" in marche.keys()
-            ):
-                if is_after(
+            try:
+                marche_has_incoherences_temporelles = is_after(
                     marche["dateNotification"], marche["datePublicationDonnees"]
-                ):
-                    marche_has_incoherences_temporelles = True
+                )
+            except KeyError:
+                pass
+            except Exception as e:
+                logging.warning(f"Impossible de vérifier la cohérence temporelle : {e}")
             ## Concession
-            elif (
-                "dateSignature" in marche.keys()
-                and "datePublicationDonnees" in marche.keys()
-            ):
-                if is_after(marche["dateSignature"], marche["datePublicationDonnees"]):
-                    marche_has_incoherences_temporelles = True
+            try:
+                marche_has_incoherences_temporelles = is_after(
+                    marche["dateSignature"], marche["datePublicationDonnees"]
+                )
+            except KeyError:
+                pass
+            except Exception as e:
+                logging.warning(f"Impossible de vérifier la cohérence temporelle : {e}")
 
             # Valeurs aberrantes
             ## Marché
-            if "montant" in marche.keys():
-                if is_market_amount_abnormal(marche["montant"]):
-                    marche_has_valeurs_aberrantes = True
+            try:
+                marche_has_valeurs_aberrantes = is_market_amount_abnormal(
+                    marche["montant"]
+                )
+            except KeyError:
+                pass
+            except Exception as e:
+                logging.warning(f"Impossible de vérifier la valeur aberrante : {e}")
             ## Concession
-            elif "valeurGlobale" in marche.keys():
-                if is_contract_value_abnormal(marche["valeurGlobale"]):
-                    marche_has_valeurs_aberrantes = True
+            try:
+                marche_has_valeurs_aberrantes = is_contract_value_abnormal(
+                    marche["valeurGlobale"]
+                )
+            except KeyError:
+                pass
+            except Exception as e:
+                logging.warning(f"Impossible de vérifier la valeur aberrante : {e}")
 
             # Incohérences montant/durée
-            if "montant" in marche.keys() and "dureeMois" in marche.keys():
-                if are_market_amount_and_duration_inconsistent(
-                    marche["montant"], marche["dureeMois"]
-                ):
-                    marche_has_incoherences_montant_duree = True
+            try:
+                marche_has_incoherences_montant_duree = (
+                    are_market_amount_and_duration_inconsistent(
+                        marche["montant"], marche["dureeMois"]
+                    )
+                )
+            except KeyError:
+                pass
+            except Exception as e:
+                logging.warning(
+                    f"Impossible de vérifier les incohérences montant/durée : {e}"
+                )
 
             # Caractères non supportés (utf8 non respecté)
-            for column in conf.audit.caractere_mal_encode.colonnes_incluses:
-                if column in marche.keys():
-                    if has_unsupported_character(marche[column]):
-                        marche_has_caracteres_mal_encodes = True
+            try:
+                for column in conf.audit.caractere_mal_encode.colonnes_incluses:
+                    if column in marche.keys():
+                        if has_unsupported_character(marche[column]):
+                            marche_has_caracteres_mal_encodes = True
+            except Exception as e:
+                logging.warning(
+                    f"Impossible de vérifier les caractères non supportés : {e}"
+                )
 
             # Dépassement du délai reglemntaire entre notification et publication
             ## Marché
-            if (
-                "dateNotification" in marche.keys()
-                and "datePublicationDonnees" in marche.keys()
-            ):
-                if is_market_publishing_delay_overdue(
-                    marche["dateNotification"], marche["datePublicationDonnees"]
-                ):
-                    marche_has_depassements_delai_entre_notification_et_publication = (
-                        True
+            try:
+                marche_has_depassements_delai_entre_notification_et_publication = (
+                    is_market_publishing_delay_overdue(
+                        marche["dateNotification"], marche["datePublicationDonnees"]
                     )
+                )
+            except KeyError:
+                pass
+            except Exception as e:
+                logging.warning(
+                    f"Impossible de vérifier le dépassement du délai de publication: {e}"
+                )
+
             ## Concession
-            elif (
-                "dateSignature" in marche.keys()
-                and "datePublicationDonnees" in marche.keys()
-            ):
-                if is_market_publishing_delay_overdue(
-                    marche["dateSignature"], marche["datePublicationDonnees"]
-                ):
-                    marche_has_depassements_delai_entre_notification_et_publication = (
-                        True
+            try:
+                marche_has_depassements_delai_entre_notification_et_publication = (
+                    is_market_publishing_delay_overdue(
+                        marche["dateSignature"], marche["datePublicationDonnees"]
                     )
+                )
+            except KeyError:
+                pass
+            except Exception as e:
+                logging.warning(
+                    f"Impossible de vérifier le dépassement du délai de publication: {e}"
+                )
 
             incoherences_temporelles += int(marche_has_incoherences_temporelles)
             valeurs_aberrantes += int(marche_has_valeurs_aberrantes)
