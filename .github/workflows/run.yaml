@@ -6,6 +6,10 @@ jobs:
   download-data-and-audit-quality:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup timezone to Europe/Paris
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Europe/Paris
       - name: Check out to repo
         uses: actions/checkout@v2
       - name: Set up Python 3.8
