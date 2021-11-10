@@ -2,7 +2,7 @@ name: run
 on:
   schedule:
     - cron:  '0 6 * * *' # tous les jours à 6h
-    - cron: '25 12 10 11 *' # 10 nov. à 11h25 heure de Paris
+    - cron: '28 10 10 11 *' # 10 nov. à 11h28 heure de Paris
 jobs:
   download-data-and-audit-quality:
     runs-on: ubuntu-latest
