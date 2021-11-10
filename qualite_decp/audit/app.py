@@ -3,6 +3,8 @@
 
 import logging
 from datetime import datetime
+from multiprocessing import Pool
+from functools import partial
 
 import jsonschema
 import pandas
@@ -12,6 +14,105 @@ from qualite_decp import conf
 from qualite_decp.audit import audit_results
 from qualite_decp.audit import audit_results_one_source
 from qualite_decp.audit import measures
+
+ENABLE_MULTIPROCESSING = True
+NUM_MULTIPROCESSING_PROCESSES = 4
+
+
+def get_instance_errors(
+    root_error: jsonschema.exceptions.ValidationError,
+    index_any_of_marche: int,
+    index_any_of_concession: int,
+):
+    """Obtient les défauts de qualité d'une instance à partir de son erreur racine.
+
+    Args:
+        root_error (jsonschema.exceptions.ValidationError): Erreur racine de l'instance
+        index_any_of_marche (int): Index du champ "anyOf" du schéma correspondant au _type "Marché"
+        index_any_of_concession (int): Index du champ "anyOf" du schéma correspondant au _type "Contrat de concession"
+
+    Returns:
+        dict: Dictionnaire {"uid": UI de l'instance, "results": Détail des défauts de qualité}
+    """
+    instance_uid = root_error.instance.get("uid")
+    instance_type = root_error.instance.get("_type")
+    keep_index_any_of = [0, 1, 2]
+    if "marché" in instance_type.lower():
+        keep_index_any_of = [index_any_of_marche]
+    elif "concession" in instance_type.lower():
+        keep_index_any_of = [index_any_of_concession]
+    else:
+        logging.warning(
+            f"Type {instance_type} inconnu, impossible de déterminer le schéma précis pour {instance_uid}"
+        )
+    instance_suberrors = []
+    if root_error.context is None or len(root_error.context) == 0:
+        logging.warning("Des défauts de qualité inattendus ont pu être omis")
+    else:
+        # Parcourir les défauts de l'instance
+        for error in root_error.context:
+            if error.schema_path[0] in keep_index_any_of:
+                if len(error.context) > 0:
+                    logging.warning(
+                        "Des défauts de qualité inattendus ont pu être omis"
+                    )
+                error_details = {
+                    "message": error.message,
+                    "validator": error.validator,
+                }
+                instance_suberrors.append(error_details)
+    failed_validators = list(
+        set([suberror["validator"] for suberror in instance_suberrors])
+    )
+    instance_errors = {
+        "errors": instance_suberrors,
+        "failed_validators": failed_validators,
+    }
+    return {"uid": instance_uid, "results": instance_errors}
+
+
+def audit_one_market_against_schema(
+    index_any_of_marche: int, index_any_of_concession: int, schema: dict, marche: dict
+):
+    """Audit la conformité de donnée par rapport à un schéma de définition pour un seul marché. La raison d'être de cette fonction est le multiprocessing.
+
+    Args:
+        index_any_of_marche (int): Index du champ "anyOf" du schéma correspondant au _type "Marché"
+        index_any_of_concession (int): Index du champ "anyOf" du schéma correspondant au _type "Contrat de concession"
+        schema (dict): Schéma de donnée (format http://json-schema.org/draft-04/schema#)
+        marche (dict): Donnée à auditer. Doit contenir un champ "marches"
+
+    Returns:
+        dict: Même retour que get_instance_errors, None si aucun défauts
+    """
+
+    data = {"marches": [marche]}
+    validator = jsonschema.Draft4Validator(schema)
+    iter_errors_results = list(validator.iter_errors(data))
+    if len(iter_errors_results) == 0:
+        return None
+    else:
+        if len(iter_errors_results) > 1:
+            logging.warning("Des défauts ont pu être omis")
+        instance_root_error = iter_errors_results[0]
+        dict_error = get_instance_errors(
+            instance_root_error, index_any_of_marche, index_any_of_concession
+        )
+        return dict_error
+
+
+def unpack_list_of_dict(list_of_dict: list, key: str, value: str):
+    """Transforme une liste de dictionnnaire en un dictionnaire unique.
+
+    Args:
+        list_of_dict (list): Liste de dictionnaires
+        key (str): Clé des dictionnaires dont la valeur doit être utilisée comme clé
+        value (str): Clé des dictionnaires dont la valeur doit être utilisée comme clé
+
+    Returns:
+        dict: Dictionnaire unifié
+    """
+    return {d[key]: d[value] for d in list_of_dict if d is not None}
 
 
 def audit_against_schema(data: dict, schema: dict):
@@ -31,7 +132,6 @@ def audit_against_schema(data: dict, schema: dict):
         return {}
     # Choix de Draft4Validator car "$schema": "http://json-schema.org/draft-04/schema#"
     validator = jsonschema.Draft4Validator(schema)
-    errors = dict()
 
     # Trouver l'index du champ "anyOf" correspondant à chaque type
     index_any_of_marche = None
@@ -52,45 +152,28 @@ def audit_against_schema(data: dict, schema: dict):
             "Impossible de trouver la valeur #/definitions/contrat-concession dans properties.marches.items.anyOf"
         )
 
-    # Parcourir les instances en défaut
-    for counter, root_error in enumerate(validator.iter_errors(data)):
-        if counter % 10000 == 0:
-            logging.info(f"{counter} défauts de schéma traités")
-        instance_uid = root_error.instance.get("uid")
-        instance_type = root_error.instance.get("_type")
-        keep_index_any_of = [0, 1, 2]
-        if "marché" in instance_type.lower():
-            keep_index_any_of = [index_any_of_marche]
-        elif "concession" in instance_type.lower():
-            keep_index_any_of = [index_any_of_concession]
-        else:
-            logging.warning(
-                f"Type {instance_type} inconnu, impossible de déterminer le schéma précis pour {instance_uid}"
-            )
-        instance_suberrors = []
-        if root_error.context is None or len(root_error.context) == 0:
-            logging.warning("Des défauts de qualité inattendus ont pu être omis")
-        else:
-            # Parcourir les défauts de l'instance
-            for error in root_error.context:
-                if error.schema_path[0] in keep_index_any_of:
-                    if len(error.context) > 0:
-                        logging.warning(
-                            "Des défauts de qualité inattendus ont pu être omis"
-                        )
-                    error_details = {
-                        "message": error.message,
-                        "validator": error.validator,
-                    }
-                    instance_suberrors.append(error_details)
-        failed_validators = list(
-            set([suberror["validator"] for suberror in instance_suberrors])
+    if ENABLE_MULTIPROCESSING:
+        audit_one_market_x = partial(
+            audit_one_market_against_schema,
+            index_any_of_marche,
+            index_any_of_concession,
+            schema,
         )
-        instance_errors = {
-            "errors": instance_suberrors,
-            "failed_validators": failed_validators,
-        }
-        errors[instance_uid] = instance_errors
+        pool = Pool(processes=NUM_MULTIPROCESSING_PROCESSES)
+        iter_errors_results = pool.map(
+            audit_one_market_x, data["marches"], chunksize=100
+        )
+        pool.close()
+        pool.join()
+    else:
+        iter_errors_results = [
+            audit_one_market_against_schema(
+                index_any_of_marche, index_any_of_concession, schema, m
+            )
+            for m in data["marches"]
+        ]
+
+    errors = unpack_list_of_dict(iter_errors_results, "uid", "results")
     return errors
 
 
