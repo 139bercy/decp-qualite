@@ -24,20 +24,20 @@ jobs:
       - name: Run the CLI command to download consolidated data
         run: |
           pipenv run python . download
-      - name: Run the quality audit on last 100k rows
+      - name: Run the quality audit on all rows
         run: |
-          pipenv run python . audit --rows 100000
+          pipenv run python . audit
       - name: Upload audit results as artifact
         uses: actions/upload-artifact@v2
         with: 
-          name: audit-100000lignes.json
-          path: ./data/audit-100000lignes.json
+          name: audit.json
+          path: ./data/audit.json
           retention-days: 7
       - name: Upload audit details per line as artifact
         uses: actions/upload-artifact@v2
         with: 
-          name: details-100000lignes.json
-          path: ./data/details-100000lignes.json
+          name: details.json
+          path: ./data/details.json
           retention-days: 7
       - name: Upload source data as artifact
         uses: actions/upload-artifact@v2
