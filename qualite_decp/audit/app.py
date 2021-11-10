@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 from multiprocessing import Pool
 from functools import partial
+import collections
 
 import jsonschema
 import pandas
@@ -388,11 +389,10 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     Returns:
         audit_results_one_source.AuditResultsOneSource: Résultats de l'audit pour la source.
     """
-
     num_lines = len(source_data["marches"])
     uids = [marche["uid"] for marche in source_data["marches"]]
-    non_unique_uids = [uid for uid in uids if len([u for u in uids if u == uid]) > 1]
-    num_non_unique_uids = len(non_unique_uids)
+    count = collections.Counter(uids)
+    num_non_unique_uids = sum(v for k, v in count.items() if v > 1)
     logging.info("%d lignes pour la source %s", num_lines, source_name)
     source_results_details = list()
 
