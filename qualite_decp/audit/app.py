@@ -383,6 +383,8 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                     elif v in ["required"]:
                         marche_has_donnees_manquantes = True
                         marche_has_valeurs_non_renseignees = True
+                    elif v in ["uniqueItems"]:
+                        pass
                     else:
                         logging.warning("Validateur non géré : %s", v)
 
