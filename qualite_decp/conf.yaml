@@ -5,13 +5,13 @@ download:
   chemin_schema_donnees: data/schema.json
 
 audit:
-  sources:
-    - 'region-bretagne'
-    - 'megalis-bretagne'
-    - 'atexo-maximilien'
+  sources:    
     - 'data.gouv.fr_aife'
     - 'ternum-bfc'
     - 'e-marchespublics'
+    - 'region-bretagne'
+    - 'megalis-bretagne'
+    - 'atexo-maximilien'
     - 'grandlyon'
     - 'marches-publics.info'
   chemin_resultats: data/audit.json #doit correspondre à run.yaml
