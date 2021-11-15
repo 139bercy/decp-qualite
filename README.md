@@ -10,7 +10,7 @@ Pré-requis :
 * [pipenv](https://pipenv-fork.readthedocs.io/en/latest/)
 * [python 3.8](https://www.python.org/downloads/release/python-3810/)
 
-### Utilisateur
+### Utilisation
 
 Installer les dépendances  :
 ```shell
@@ -45,7 +45,7 @@ $Env:GITHUB_USERNAME="<Nom d'utilisateur GitHub>"
 $Env:GITHUB_TOKEN="<Jeton d'accès>"
 ```
 
-### Développeur
+### Guide du développeur
 
 Installer les dépendances, y compris celles de développement  :
 ```shell
@@ -58,8 +58,17 @@ pre-commit install
 pre-commit autoupdate
 ```
 
-### Fonctionnement
+Un [*workflow*](.github/workflows/tests.yaml) se déclenche à chaque *push* sur la branche *main*. Il est composé de deux *jobs* :
+* `pylint-score` vérifie la conformité du code au standard PEP-8, à l'aide du module *pylint*. Le *job* échoue si le score de conformité est inférieur à 8/10.
+* `pipfile-lock-check` vérifie que les dépendances du projet sont correctement vérouillées dans le fichier *Pipfile.lock*. Il s'agit d'une pratique recommandée dans la documentation de l'outil *pipenv*. Le *job* échoue si ce n'est pas le cas.
 
-| GitHub Actions workflow | GitHub Actions artifacts store | Streamlit servers |
-|:---:|:---:|:---:|
-| Télécharge la donnée <br> Audite la qualité <br> → | <br><br>Stocke les résultats | <br><br><br>← <br>Exécute l'application Web | 
+### Fonctionnement opérationnel
+
+Deux systèmes fonctionnent en parallèle. Ils utilisent tous les deux la branche *main* du projet.
+
+* Un [*workflow*](.github/workflows/run.yaml) automatisé analyse chaque jour la qualité de données en exécutant les commandes `download` puis `audit`. Ce workflow s'exécute sur le service GitHub Actions. Trois *artifacts* au format JSON sont générés par ce *workflow* puis stockés par GitHub :
+  * Le fichier original des DECP consolidées, issu de la commande `download`
+  * Le fichier de synthèse des résultats de l'analyse de qualité par source, issu de la commande `audit`, au format JSON
+  * Le fichier de détail par marché de l'analyse de qualité, issu de la commande `audit`
+
+* L'application Web de présentation des résultats est hébergée sur le service streamlit.io. Elle peut aussi être exécutée ssur un poste avec la commande `web`. L'utilisateur sélectionne une date courante et une date de comparaison, et l'application récupère les résultats d'audit (stockés sous forme d'*artifacts*) correspondant à ces dates pour les afficher sur la page.
