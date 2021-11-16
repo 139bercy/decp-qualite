@@ -40,14 +40,14 @@ def sidebar(available_sources: list, available_dates: list):
     month_formatter_lambda = lambda date: date.strftime("%b. %Y")
     with sidebar_column_1:
         current_date = st.selectbox(
-            "Date courante",
+            "Mois courant",
             available_dates,
             index=len(available_dates) - 1,
             format_func=month_formatter_lambda,
         )
     with sidebar_column_2:
         old_date = st.selectbox(
-            "Date à comparer",
+            "Mois à comparer",
             available_dates,
             index=0,
             format_func=month_formatter_lambda,
