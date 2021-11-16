@@ -12,6 +12,7 @@ def run():
     details_artifacts_dict = artifacts.list_artifacts(conf.audit.nom_artifact_details)
     available_sources = conf.audit.sources
     available_dates = results_artifacts_dict.keys()
+    available_dates = artifacts.keep_one_date_per_month(available_dates)
     (
         selected_page,
         selected_source,

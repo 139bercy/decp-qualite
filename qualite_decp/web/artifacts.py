@@ -44,6 +44,25 @@ def load_json_from_url(url: str):
     return response.json()
 
 
+def keep_one_date_per_month(dates: list):
+    """Prune a list of dates by keeping only the 1st date for each represented month.
+
+    Args:
+        dates (list): List of dates
+
+    Returns:
+        list: List of dates, 1 per month
+    """
+    dates = sorted(dates)
+    pruned_dates = list()
+    for date in dates:
+        if any([date.month == pruned_date.month for pruned_date in pruned_dates]):
+            pass
+        else:
+            pruned_dates.append(date)
+    return pruned_dates
+
+
 def get_github_auth():
     """Obtient un tuple d'authentification pour l'API GitHub.
 

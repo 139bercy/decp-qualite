@@ -37,12 +37,21 @@ def sidebar(available_sources: list, available_dates: list):
     )
     selected_source = st.sidebar.selectbox("Source à analyser", available_sources)
     sidebar_column_1, sidebar_column_2 = st.sidebar.columns(2)
+    month_formatter_lambda = lambda date: date.strftime("%b. %Y")
     with sidebar_column_1:
         current_date = st.selectbox(
-            "Date courante", available_dates, index=len(available_dates) - 1
+            "Date courante",
+            available_dates,
+            index=len(available_dates) - 1,
+            format_func=month_formatter_lambda,
         )
     with sidebar_column_2:
-        old_date = st.selectbox("Date à comparer", available_dates, index=0)
+        old_date = st.selectbox(
+            "Date à comparer",
+            available_dates,
+            index=0,
+            format_func=month_formatter_lambda,
+        )
     st.sidebar.markdown(conf.web.texte_bas_barre_laterale)
     return selected_page, selected_source, current_date, old_date
 
