@@ -75,7 +75,7 @@ class AuditResults:
             path (str): Chemin vers le fichier .json
         """
         l = self.to_list()
-        download.save_json(l, path)
+        download.utils.save_json(l, path)
 
     @classmethod
     def from_list(cls, l: list):
@@ -94,7 +94,7 @@ class AuditResults:
         Returns:
             AuditResults: Instance créée
         """
-        l = download.open_json(path)
+        l = download.utils.open_json(path)
         return cls.from_list(l)
 
     @staticmethod

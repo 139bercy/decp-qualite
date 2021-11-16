@@ -90,7 +90,9 @@ def download_artifact_archive_from_url(archive_url: str, path: str):
         path (str): Chemin vers le fichier téléchargé
     """
     auth = get_github_auth()
-    download.download_data_from_url_to_file(archive_url, path, stream=True, auth=auth)
+    download.utils.download_data_from_url_to_file(
+        archive_url, path, stream=True, auth=auth
+    )
 
 
 @st.cache

@@ -12,7 +12,7 @@ from qualite_decp import download
 
 def command_download(args=None):
     """Télécharge la donnée consolidée (.json depuis data.gouv.fr)."""
-    download.run()
+    download.app.run()
 
 
 def command_audit(args=None):

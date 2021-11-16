@@ -428,7 +428,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
         valeurs_extremes = 0
 
         try:
-            dataframe = download.json_dict_to_dataframe(
+            dataframe = download.utils.json_dict_to_dataframe(
                 source_data, record_path="marches", index_column="uid"
             )
             lignes_dupliquees = count_duplicated_lines(dataframe)
@@ -673,8 +673,8 @@ def run(rows: int = None, keep_type_marche_only=False):
         rows (int, optional): Nombre de lignes desquelles auditer la qualité. Defaults to None.
         keep_type_marche_only (bool, optional): Garder uniquement les enregirstrements où le _type est marché. Defaults to False.
     """
-    data = download.open_json(conf.download.chemin_donnes_consolidees)
-    schema = download.open_json(conf.download.chemin_schema_donnees)
+    data = download.utils.open_json(conf.download.chemin_donnes_consolidees)
+    schema = download.utils.open_json(conf.download.chemin_schema_donnees)
     # Choix d'un sous-ensemble des marchés, si requis
     if rows is not None:
         data["marches"] = data["marches"][-rows:]
@@ -710,4 +710,4 @@ def run(rows: int = None, keep_type_marche_only=False):
 
     results.compute_ranks()
     results.to_json(conf.audit.chemin_resultats)
-    download.save_json(details, conf.audit.chemin_details)
+    download.utils.save_json(details, conf.audit.chemin_details)

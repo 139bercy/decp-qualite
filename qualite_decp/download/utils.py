@@ -1,31 +1,7 @@
-""" Ce module contient les fonctions nécessaires au téléchargement des données consolidées.
-"""
-
-import logging
 import json
 
 import requests
 import pandas
-
-pandas.set_option("display.max_columns", 500)
-
-from qualite_decp import conf
-
-
-def run():
-    """Télécharge la donnée consolidée (.json depuis data.gouv.fr)."""
-    logging.info("Téléchargement des données consolidées...")
-    download_data_from_url_to_file(
-        conf.download.url_donnees_consolidees,
-        conf.download.chemin_donnes_consolidees,
-        stream=True,
-    )
-    logging.info("Téléchargement du schéma de données...")
-    download_data_from_url_to_file(
-        conf.download.url_schema_donnees,
-        conf.download.chemin_schema_donnees,
-        stream=False,
-    )
 
 
 def download_data_from_url_to_file(url: str, path: str, stream: bool = True, auth=None):
