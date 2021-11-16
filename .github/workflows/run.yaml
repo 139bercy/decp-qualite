@@ -1,7 +1,7 @@
 name: run
 on:
   schedule:
-    - cron:  '0 5 * * *' # tous les jours à 5h
+    - cron:  '0 6 1 * *' # le 1er du mois à 6h
   workflow_dispatch: # permet le déclenchement manuel depuis github.com
 jobs:
   download-data-and-audit-quality:

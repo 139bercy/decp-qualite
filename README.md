@@ -66,7 +66,7 @@ Un [*workflow*](.github/workflows/tests.yaml) se déclenche à chaque *push* sur
 
 Deux systèmes fonctionnent en parallèle. Ils utilisent tous les deux la branche *main* du projet.
 
-* Un [*workflow*](.github/workflows/run.yaml) automatisé analyse chaque jour la qualité de données en exécutant les commandes `download` puis `audit`. Ce workflow s'exécute sur le service GitHub Actions. Trois *artifacts* au format JSON sont générés par ce *workflow* puis stockés par GitHub :
+* Un [*workflow*](.github/workflows/run.yaml) automatisé analyse chaque 1er du mois la qualité de données en exécutant les commandes `download` puis `audit`. Ce workflow s'exécute sur le service GitHub Actions. Trois *artifacts* au format JSON sont générés par ce *workflow* puis stockés par GitHub :
   * Le fichier original des DECP consolidées, issu de la commande `download`
   * Le fichier de synthèse des résultats de l'analyse de qualité par source, issu de la commande `audit`, au format JSON
   * Le fichier de détail par marché de l'analyse de qualité, issu de la commande `audit`
