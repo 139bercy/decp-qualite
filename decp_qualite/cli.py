@@ -6,8 +6,8 @@ import sys
 
 import streamlit.cli
 
-from qualite_decp import audit
-from qualite_decp import download
+from decp_qualite import audit
+from decp_qualite import download
 
 
 def command_download(args=None):

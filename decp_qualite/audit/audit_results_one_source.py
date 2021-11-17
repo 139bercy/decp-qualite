@@ -1,5 +1,5 @@
-from qualite_decp.audit import measures
-from qualite_decp.audit import app
+from decp_qualite.audit import measures
+from decp_qualite.audit import app
 
 
 class AuditResultsOneSource:

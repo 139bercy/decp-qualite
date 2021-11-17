@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from qualite_decp.audit import app
+from decp_qualite.audit import app
 
 
 class General:

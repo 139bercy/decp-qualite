@@ -6,8 +6,8 @@ import pandas
 
 pandas.set_option("display.max_columns", 500)
 
-from qualite_decp import conf
-from qualite_decp.download import utils
+from decp_qualite import conf
+from decp_qualite.download import utils
 
 
 def run():

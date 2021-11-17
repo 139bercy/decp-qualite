@@ -6,16 +6,16 @@ import base64
 from audit import audit_results_one_source
 import streamlit as st
 
-from qualite_decp import conf
-from qualite_decp.audit import audit_results
-from qualite_decp.audit import measures
+from decp_qualite import conf
+from decp_qualite.audit import audit_results
+from decp_qualite.audit import measures
 
 
 def page_config():
     """Construit la configuration Streamlit de la page"""
     st.set_page_config(
         page_title=conf.web.titre_page,
-        page_icon="qualite_decp/web/static/favicon.ico",
+        page_icon="decp_qualite/web/static/favicon.ico",
         layout="wide",
         initial_sidebar_state="auto",
     )
@@ -117,7 +117,7 @@ def page(
 
 def title():
     """Construit le titre de la page"""
-    st.image("qualite_decp/web/static/logo.png", width=300)
+    st.image("decp_qualite/web/static/logo.png", width=300)
     st.title(conf.web.titre)
 
 

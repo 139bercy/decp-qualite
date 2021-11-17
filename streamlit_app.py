@@ -2,6 +2,6 @@
 l'application Web depuis la racine du projet avec le CLI Streamlit (streamlit run)
 """
 
-from qualite_decp import web
+from decp_qualite import web
 
 web.app.run()

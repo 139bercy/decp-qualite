@@ -10,11 +10,11 @@ import collections
 import jsonschema
 import pandas
 
-from qualite_decp import download
-from qualite_decp import conf
-from qualite_decp.audit import audit_results
-from qualite_decp.audit import audit_results_one_source
-from qualite_decp.audit import measures
+from decp_qualite import download
+from decp_qualite import conf
+from decp_qualite.audit import audit_results
+from decp_qualite.audit import audit_results_one_source
+from decp_qualite.audit import measures
 
 ENABLE_MULTIPROCESSING = True
 NUM_MULTIPROCESSING_PROCESSES = 4

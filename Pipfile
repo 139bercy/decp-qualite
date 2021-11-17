@@ -9,7 +9,7 @@ streamlit = "*"
 jsonschema = "*"
 pyyaml = "*"
 munch = "*"
-qualite-decp = {editable = true, path = "./qualite_decp"}
+qualite-decp = {editable = true, path = "./decp_qualite"}
 pandas = "*"
 tqdm = "*"
 

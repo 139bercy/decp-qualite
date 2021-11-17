@@ -1,8 +1,8 @@
 import streamlit as st
 
-from qualite_decp import conf
-from qualite_decp.web import build
-from qualite_decp.web import artifacts
+from decp_qualite import conf
+from decp_qualite.web import build
+from decp_qualite.web import artifacts
 
 
 def run():

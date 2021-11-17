@@ -1,7 +1,7 @@
 from typing import List
 
-from qualite_decp import download
-from qualite_decp.audit import audit_results_one_source
+from decp_qualite import download
+from decp_qualite.audit import audit_results_one_source
 
 
 class AuditResults:
