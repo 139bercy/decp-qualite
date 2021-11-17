@@ -4,7 +4,7 @@
 ![Actions badge](https://github.com/139bercy/decp-qualite/actions/workflows/run.yaml/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Ce projet permet d'auditer la qualité des données essentielles de la commande publique consolidées sur data.gouv.fr. Les résultats sont affichés dans une application Web interactive.
+Ce projet permet d'auditer la qualité des données essentielles de la commande publique consolidées sur [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/donnees-essentielles-de-la-commande-publique-fichiers-consolides/). Les résultats sont affichés dans une application Web interactive.
 
 Pré-requis :
 * [pipenv](https://pipenv-fork.readthedocs.io/en/latest/)
