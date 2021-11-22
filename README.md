@@ -47,6 +47,8 @@ $Env:GITHUB_TOKEN="<Jeton d'accès>"
 
 ### Guide du développeur
 
+#### Mise en place de l'environnement et *workflow*
+
 Installer les dépendances, y compris celles de développement  :
 ```shell
 pipenv install --dev --python 3.8
@@ -61,6 +63,20 @@ pre-commit autoupdate
 Un [*workflow*](.github/workflows/tests.yaml) se déclenche à chaque *push* sur la branche *main*. Il est composé de deux *jobs* :
 * `pylint-score` vérifie la conformité du code au standard PEP-8, à l'aide du module *pylint*. Le *job* échoue si le score de conformité est inférieur à 8/10.
 * `pipfile-lock-check` vérifie que les dépendances du projet sont correctement vérouillées dans le fichier *Pipfile.lock*. Il s'agit d'une pratique recommandée dans la documentation de l'outil *pipenv*. Le *job* échoue si ce n'est pas le cas.
+
+#### Configurations, hypothèses et valeurs par défauts
+
+Les hypothèses  et seuils utilisées pour l'audit de qualité, principaux textes de l'application Web, et URL des jeux de données utilisées sont répertoriés dans le fichier de configuration [`decp_qualite/conf.yaml`](decp_qualite/conf.yaml)
+
+#### Ajouter une mesure de qualité
+
+Pour créer un nouvel indicateur de qualité, les 4 étapes suivantes doivent être exécutées :
+
+* La nouvelle mesure doit être définie comme une nouvelle classe héritant de la classe `Measure` dans le fichier [`decp_qualite/audit/measures.py`](decp_qualite/audit/measures.py).
+* La nouvelle mesure doit ensuite être rattachée à la classe `AuditResultsOneSource` dans le fichier [`decp_qualite/audit/audit_results_one_source.py`](decp_qualite/audit/audit_results_one_source.py).
+* Les valeurs de la mesure pour le jeu de données doivent être calculées dans la fonction `audit_source_quality` dans le fichier [`decp_qualite/audit/app.py`](decp_qualite/audit/app.py).
+* Enfin, l'affichage de la mesure sur le tableau de bord doit être implémenté dans la fonction `details_container` dans le fichier [`decp_qualite/web/build.py`](decp_qualite/web/build.py).
+
 
 ### Fonctionnement opérationnel
 
