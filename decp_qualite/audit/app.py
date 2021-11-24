@@ -397,35 +397,24 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     logging.info("%d lignes pour la source %s", num_lines, source_name)
     source_results_details = list()
 
+    formats_non_valides = 0.0
+    valeurs_non_valides = 0.0
+    donnees_manquantes = 0.0
+    valeurs_non_renseignees = 0.0
+    lignes_dupliquees = 0.0
+    caracteres_mal_encodes = 0.0
+    jours_depuis_derniere_publication = 0
+    depassements_delai_entre_notification_et_publication = 0.0
+    incoherences_temporelles = 0.0
+    incoherences_montant_duree = 0.0
+    valeurs_aberrantes = 0.0
+    valeurs_extremes = 0.0
+
     if len(source_data["marches"]) == 0:
         identifiants_non_uniques = 0.0
-        formats_non_valides = 0.0
-        valeurs_non_valides = 0.0
-        donnees_manquantes = 0.0
-        valeurs_non_renseignees = 0.0
-        lignes_dupliquees = 0.0
-        caracteres_mal_encodes = 0.0
-        jours_depuis_derniere_publication = 0
-        depassements_delai_entre_notification_et_publication = 0.0
-        incoherences_temporelles = 0.0
-        incoherences_montant_duree = 0.0
-        valeurs_aberrantes = 0.0
-        valeurs_extremes = 0.0
     else:
         schema_audit_results = audit_against_schema(source_data, schema)
         identifiants_non_uniques = num_non_unique_uids
-        formats_non_valides = 0
-        valeurs_non_valides = 0
-        donnees_manquantes = 0
-        valeurs_non_renseignees = 0
-        lignes_dupliquees = 0
-        caracteres_mal_encodes = 0
-        jours_depuis_derniere_publication = 0
-        depassements_delai_entre_notification_et_publication = 0
-        incoherences_temporelles = 0
-        incoherences_montant_duree = 0
-        valeurs_aberrantes = 0
-        valeurs_extremes = 0
 
         try:
             dataframe = download.utils.json_dict_to_dataframe(
@@ -596,7 +585,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
                     "valeurs_aberrantes": marche_has_valeurs_aberrantes,
                     "incoherences_montant_duree": marche_has_incoherences_montant_duree,
                     "caracteres_mal_encodes": marche_has_caracteres_mal_encodes,
-                    "depassements_delai_entre_notification_et_publication": marche_has_depassements_delai_entre_notification_et_publication
+                    "depassements_delai_entre_notification_et_publication": marche_has_depassements_delai_entre_notification_et_publication,
                     # Les autres mesures sont calculées à l'échelle du jeu de données
                     # identifiants_non_uniques
                     # valeurs_extremes
