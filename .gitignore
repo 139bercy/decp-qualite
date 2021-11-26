@@ -1,5 +1,6 @@
 # Dossier contenant les jeux de données
 data/
+*.csv
 
 # Gestionnaire de dépendance non utilisé
 pyproject.toml
