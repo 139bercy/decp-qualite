@@ -7,6 +7,7 @@ download:
 audit:
   sources:    
     - 'data.gouv.fr_aife'
+    - 'data.gouv.fr_pes'
     - 'ternum-bfc'
     - 'e-marchespublics'
     - 'region-bretagne'
