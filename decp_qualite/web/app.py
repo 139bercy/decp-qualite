@@ -24,30 +24,33 @@ def run():
     elif selected_page == conf.web.page_resultats:
         if len(results_artifacts_dict) > 0:
             # Récupération de la synthèse de l'audit et construction de la page principale
-            current_results = artifacts.get_audit_results(
-                selected_current_date,
-                selected_source,
-                buffer_path="./data/results-current.zip",
-            )
-            comparison_results = artifacts.get_audit_results(
-                selected_comparison_date,
-                selected_source,
-                buffer_path="./data/results-compared.zip",
-            )
-            build.page(current_results, comparison_results)
-            # Récupération des détails par marché de l'audit et construction du bouton de téléchargement
-            details_url = details_artifacts_dict.get(selected_current_date)
-            if details_url is not None:
-                artifacts.download_artifact_archive_from_url(
-                    details_url, path="./data/details.zip"
+            try:
+                current_results = artifacts.get_audit_results(
+                    selected_current_date,
+                    selected_source,
+                    buffer_path="./data/results-current.zip",
                 )
-                path_details = "./data/details.zip"
-            else:
-                path_details = None
-            build.download_button(
-                "./data/results-current.zip",
-                path_details=path_details,
-                parent_container=st.sidebar,
-            )
+                comparison_results = artifacts.get_audit_results(
+                    selected_comparison_date,
+                    selected_source,
+                    buffer_path="./data/results-compared.zip",
+                )
+                build.page(current_results, comparison_results)
+                # Récupération des détails par marché de l'audit et construction du bouton de téléchargement
+                details_url = details_artifacts_dict.get(selected_current_date)
+                if details_url is not None:
+                    artifacts.download_artifact_archive_from_url(
+                        details_url, path="./data/details.zip"
+                    )
+                    path_details = "./data/details.zip"
+                else:
+                    path_details = None
+                build.download_button(
+                    "./data/results-current.zip",
+                    path_details=path_details,
+                    parent_container=st.sidebar,
+                )
+            except IndexError:
+                build.no_data_page()
         else:
             build.no_data_page()

@@ -94,7 +94,9 @@ def download_button(path_results: str, path_details: str = None, parent_containe
 def no_data_page():
     """Construit la partie principale de la page si aucune donnée n'est disponible"""
     title()
-    st.error("Aucune donnée de résultat d'audit de qualité n'est disponible.")
+    st.error(
+        "Aucune donnée de résultat d'audit de qualité n'est disponible pour cette source et ce mois."
+    )
 
 
 def documentation_page():
