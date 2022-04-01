@@ -9,9 +9,9 @@ streamlit = "*"
 jsonschema = "*"
 pyyaml = "*"
 munch = "*"
-qualite-decp = {editable = true, path = "./decp_qualite"}
 pandas = "*"
 tqdm = "*"
+decp-qualite = {editable = true, path = "./decp_qualite"}
 
 [dev-packages]
 pylint = "*"
