@@ -18,7 +18,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pylint
       - name: Scores decp_qualite module with pylint. Fails under 8.0.
-        run: pylint ./decp_qualite/ --disable missing-module-docstring,import-error,fixme --fail-under=8.0
+        run: pylint ./decp_qualite/ --disable missing-module-docstring,import-error,fixme --fail-under=8.0 --max-line-length=120
   pipfile-lock-check:
     runs-on: ubuntu-latest
     steps:

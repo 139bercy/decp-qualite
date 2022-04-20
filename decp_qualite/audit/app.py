@@ -360,7 +360,7 @@ def count_extreme_values(dataframe: pandas.DataFrame):
         int: Nombre de lignes contenant au moins une valeur extrême
     """
     include_columns = conf.audit.valeurs_extremes.colonnes_incluses
-    extrem_values_lines_uids = list()
+    extrem_values_lines_uids = []
     num_stdev = conf.audit.valeurs_extremes.nombre_deviations_standards
     for col in include_columns:
         series = dataframe[col]
@@ -395,7 +395,7 @@ def audit_source_quality(source_name: str, source_data: dict, schema: dict):
     count = collections.Counter(uids)
     num_non_unique_uids = sum(v for k, v in count.items() if v > 1)
     logging.info("%d lignes pour la source %s", num_lines, source_name)
-    source_results_details = list()
+    source_results_details = []
 
     formats_non_valides = 0.0
     valeurs_non_valides = 0.0
@@ -683,7 +683,7 @@ def run(rows: int = None, keep_type_marche_only=False):
     # Audit par source
     available_sources = set([m.get("source") for m in data["marches"]])
     results = audit_results.AuditResults()
-    details = list()
+    details = []
     for source in conf.audit.sources:
         logging.info("Audit de la qualité pour la source %s...", source)
         source_data = {

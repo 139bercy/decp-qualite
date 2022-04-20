@@ -4,10 +4,10 @@
 import logging
 import pandas
 
-pandas.set_option("display.max_columns", 500)
-
 from decp_qualite import conf
 from decp_qualite.download import utils
+
+pandas.set_option("display.max_columns", 500)
 
 
 def run():
